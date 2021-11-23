@@ -10,15 +10,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		try {
-			Socket socket = new Socket("localhost", 13337);
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(new Integer(42));
-			oos.writeObject(new Integer(43));
-			oos.writeObject(new Integer(44));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 }
