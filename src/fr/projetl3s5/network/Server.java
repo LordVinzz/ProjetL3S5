@@ -1,4 +1,4 @@
-package ft.projetl3s5.network;
+package fr.projetl3s5.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,7 +13,7 @@ public class Server {
 	private boolean running = false;
 	private List<ServerThread> clients;
 	
-	public Server() {
+	private Server() {
 		try {
 			serverSocket = new ServerSocket(13337);
 			clients = new ArrayList<ServerThread>();
@@ -38,16 +38,14 @@ public class Server {
 	}
 
 	public static void init() {
-		instance = new Server();
-		instance.listen();
+		if(instance == null) {			
+			instance = new Server();
+			instance.listen();
+		}
 	}
 	
 	public static Server getInstance() {
 		return instance;
 	}
-	
-	public static void main(String[] args) {
-		init();
-	}
-		
+			
 }
