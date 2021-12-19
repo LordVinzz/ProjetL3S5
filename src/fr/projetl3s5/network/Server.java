@@ -6,12 +6,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.projetl3s5.db.DatabaseCommunicator;
+
 public class Server {
 	
 	private static Server instance;
 	private ServerSocket serverSocket;
 	private boolean running = false;
 	private List<ServerThread> clients;
+	private DatabaseCommunicator db;
 	
 	private Server() {
 		try {
@@ -46,6 +49,10 @@ public class Server {
 	
 	public static Server getInstance() {
 		return instance;
+	}
+	
+	public DatabaseCommunicator getDb() {
+		return db;
 	}
 			
 }

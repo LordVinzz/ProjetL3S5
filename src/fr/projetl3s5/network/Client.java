@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class Client extends Thread {
+public class Client extends Thread implements Context {
 
 	private Socket socket;
 	private ObjectOutputStream out;
@@ -46,5 +46,10 @@ public class Client extends Thread {
 	
 	public Packet pollPacket() {
 		return packets.poll();
+	}
+	
+	@Override
+	public Socket getSocket() {
+		return socket;
 	}
 }
