@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import fr.project.groups.Group;
+import fr.project.groups.User;
 
 public class ConnectionPacket extends Packet{
 
@@ -21,8 +21,8 @@ public class ConnectionPacket extends Packet{
 		if(ctx instanceof ServerThread) {
 			ServerThread serv = (ServerThread)ctx;
 			JSONObject jObject = new JSONObject(content);
-			Group group = serv.getDb().isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
-			if(group != null) {
+			User user = serv.getDb().isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
+			if(group != null) { // TODO
 				jObject = new JSONObject("{\r\n"
 						+ "  \"Status\": \"valid\",\r\n"
 						+ "  \"ConnectionToken\": \""+ serv.getUuid() + "\"\r\n"
@@ -43,6 +43,8 @@ public class ConnectionPacket extends Packet{
 			String token = jObject.getString("ConnectionToken");
 			if(!token.equals("null")) {
 				//client.log dans l'interface
+			}else {
+				//client.error
 			}
 		} else {
 			ctx.getOut().writeObject(new MalformedPacketException("Exception thrown by server !"));
