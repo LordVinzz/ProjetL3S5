@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import fr.projetl3s5.groups.User;
+import fr.projetl3s5.db.DatabaseCommunicator;
 
 public class ConnectionPacket extends Packet{
 
@@ -21,7 +21,7 @@ public class ConnectionPacket extends Packet{
 		if(ctx instanceof ServerThread) {
 			ServerThread serv = (ServerThread)ctx;
 			JSONObject jObject = new JSONObject(content);
-			boolean user = serv.getDb().isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
+			boolean user = DatabaseCommunicator.isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
 			if(user != false) { // TODO
 				jObject = new JSONObject("{}");
 				

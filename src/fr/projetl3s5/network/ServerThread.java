@@ -53,8 +53,8 @@ public class ServerThread extends Thread implements Context{
 		return packets.poll();
 	}
 	
-	public DatabaseCommunicator getDb() {
-		return Server.getInstance().getDb();
+	public DatabaseCommunicator getDatabaseInstance() {
+		return Server.getInstance().getDatabaseInstance();
 	}
 	
 	public UUID getUuid() {

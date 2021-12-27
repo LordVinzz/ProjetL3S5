@@ -14,7 +14,7 @@ public class Server {
 	private ServerSocket serverSocket;
 	private boolean running = false;
 	private List<ServerThread> clients;
-	private DatabaseCommunicator db;
+	private static DatabaseCommunicator db;
 	
 	private Server() {
 		try {
@@ -51,7 +51,7 @@ public class Server {
 		return instance;
 	}
 	
-	public DatabaseCommunicator getDb() {
+	public static DatabaseCommunicator getDatabaseInstance() {
 		return db;
 	}
 			
