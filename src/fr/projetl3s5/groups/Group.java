@@ -13,13 +13,24 @@ public enum Group {
 		this.id = id;
 	}
 	
-	public static List<Group> getGroupByID(int int1) {
+	public int getId() {
+		return id;
+	}
+	
+	public static List<Group> getGroupsByID(int int1) {
 		List<Group> list = new ArrayList<>();
 		
 		for(Group g : Group.values()) {
 			if((int1 & g.id) != 0) list.add(g);
 		}
 		return list;
+	}
+	
+	public static Group getGroupByID(int int1) {
+		for(Group g : Group.values()) {
+			if(int1 == g.id) return g;
+		}
+		return null;
 	}
 	
 }
