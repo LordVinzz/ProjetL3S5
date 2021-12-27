@@ -1,4 +1,4 @@
-package fr.projectl3s5.groups;
+package fr.projetl3s5.groups;
 
 public class User {
 

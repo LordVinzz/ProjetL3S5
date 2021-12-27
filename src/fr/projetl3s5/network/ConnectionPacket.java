@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import fr.projectl3s5.groups.User;
+import fr.projetl3s5.groups.User;
 
 public class ConnectionPacket extends Packet{
 
