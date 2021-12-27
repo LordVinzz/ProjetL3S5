@@ -22,7 +22,7 @@ public class User {
 		this.prenom=prenom;
 		this.nom=nom;
 		
-		for(Group g : Group.getGroupByID(groupe)) {
+		for(Group g : Group.getGroupsByID(groupe)) {
 			this.groupe.add(g.toString());
 		}
 		
