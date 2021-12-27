@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import fr.project.groups.Group;
-import fr.project.groups.User;
+import fr.project.l3s5.groups.Group;
+import fr.project.l3s5.groups.User;
 import fr.projetl3s5.network.Context;
 
 public class DatabaseCommunicator {
@@ -30,16 +30,16 @@ public class DatabaseCommunicator {
 		}
 	}
 	
-	public User isUserExisting(String username, String passwordHash) {
+	public boolean isUserExisting(String username, String passwordHash) {
 		try {
 			resultSet = statement.executeQuery(String.format(
 					"SELECT * FROM userstable WHERE userstable.username = %s and userstable.passwordHash = %s", username, passwordHash
 					)
 			);
 			resultSet.next();
-			return new User(Group.getGroupByID(resultSet.getInt("group")), username, resultSet.getString("name"), resultSet.getString("fname"));
+			return true;
 		} catch (SQLException e) {
-			return null;
+			return false;
 		}
 	}
 	

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import fr.project.groups.User;
+import fr.project.l3s5.groups.User;
 
 public class ConnectionPacket extends Packet{
 
@@ -21,19 +21,21 @@ public class ConnectionPacket extends Packet{
 		if(ctx instanceof ServerThread) {
 			ServerThread serv = (ServerThread)ctx;
 			JSONObject jObject = new JSONObject(content);
-			User user = serv.getDb().isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
-			if(group != null) { // TODO
-				jObject = new JSONObject("{\r\n"
-						+ "  \"Status\": \"valid\",\r\n"
-						+ "  \"ConnectionToken\": \""+ serv.getUuid() + "\"\r\n"
-						+ "}");
+			boolean user = serv.getDb().isUserExisting(jObject.getString("username"), jObject.getString("passwordHash"));
+			if(user != false) { // TODO
+				jObject = new JSONObject("{}");
+				
+				jObject.put("Status", "valid");
+				jObject.put("ConnectionToken", serv.getUuid());
+				
 				ConnectionPacket connecPacket = new ConnectionPacket(jObject.toString());
 				serv.getOut().writeObject(connecPacket);
 			}else {
-				jObject = new JSONObject("{\r\n"
-						+ "  \"Status\": \"invalid\",\r\n"
-						+ "  \"ConnectionToken\": \"null\"\r\n"
-						+ "}");
+				jObject = new JSONObject("{}");
+				
+				jObject.put("Status", "invalid");
+				jObject.put("ConnectionToken", "null");
+				
 				ConnectionPacket connecPacket = new ConnectionPacket(jObject.toString());
 				serv.getOut().writeObject(connecPacket);
 			}
