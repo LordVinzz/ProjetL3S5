@@ -10,9 +10,9 @@ public class Ticket implements Comparable<Ticket>{
 	private String titre;
 	private String groupe;
 	private NavigableSet<Message> historique = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
-	private Client createur;
+	private User createur;
 	
-	public Ticket(String titre, String groupe, List<Message> historique, Client createur) {
+	public Ticket(String titre, String groupe, List<Message> historique, User createur) {
 		this.titre=titre;
 		this.groupe=groupe;
 		this.createur=createur;
@@ -31,7 +31,7 @@ public class Ticket implements Comparable<Ticket>{
 		return groupe;
 	}
 	
-	public Client getCreateur() {
+	public User getCreateur() {
 		return createur;
 	}
 	

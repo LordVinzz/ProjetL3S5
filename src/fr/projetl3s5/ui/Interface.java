@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -15,14 +13,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Interface {
+
+	private User user;
 
 	
 	public JPanel affichMessage(Message t) {
@@ -138,10 +138,18 @@ public class Interface {
 		JPanel histMsg = new JPanel();
 
 		histMsg.add(titre);
+		DefaultMutableTreeNode racine = new DefaultMutableTreeNode("Liste Tickets");
 		
-		List<JPanel> listMsg = new ArrayList<>();
+		DefaultMutableTreeNode categorie;
+		for(String group : user.getGroupe()) {
+			categorie = new DefaultMutableTreeNode(group);
+			racine.add(group);
+		}
 		
-		JList<JPanel> jListMsg = new JList<>((JPanel[]) listMsg.toArray());
+		/*
+		List<JPanel> listMsg = user.get;
+		
+		JList<JPanel> jListMsg = new JList<>((JPanel[]) listMsg.toArray());*/
 		
 		return histMsg;
 	}
@@ -166,7 +174,9 @@ public class Interface {
 		frame.add(onglet);
 	}
 
-	public Interface() {
+	public Interface(User user) {
+		this.user=user;
+		
 		JFrame frame = new JFrame("Facebook");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCompToFrame(frame);

@@ -1,11 +1,11 @@
 package fr.projetl3s5.ui;
 
 public class Message implements Comparable<Message>{
-	private Client createur;
+	private User createur;
 	private int dateEmise;
 	private String contenu;
 	
-	public Message(Client createur, int dateEmise, String contenu) {
+	public Message(User createur, int dateEmise, String contenu) {
 		this.createur=createur;
 		this.dateEmise=dateEmise;
 		this.contenu=contenu;
@@ -19,7 +19,7 @@ public class Message implements Comparable<Message>{
 		return contenu;
 	}
 	
-	public Client getCreateur() {
+	public User getCreateur() {
 		return createur;
 	}
 	
