@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
+import fr.projetl3s5.groups.Group;
+
 
 public class Ticket implements Comparable<Ticket>{
 	
 	private String titre;
-	private String groupe;
+	private Group groupe;
 	private NavigableSet<Message> historique = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
 	private User createur;
 	
-	public Ticket(String titre, String groupe, List<Message> historique, User createur) {
+	public Ticket(String titre, Group groupe, List<Message> historique, User createur) {
 		this.titre=titre;
 		this.groupe=groupe;
 		this.createur=createur;
@@ -28,7 +30,7 @@ public class Ticket implements Comparable<Ticket>{
 	}
 	
 	public String getGroupe() {
-		return groupe;
+		return groupe.toString();
 	}
 	
 	public User getCreateur() {
@@ -40,7 +42,7 @@ public class Ticket implements Comparable<Ticket>{
 	}
 	
 	public Message getPremMessage() {
-		return historique.pollLast();
+		return historique.pollFirst();
 	}
 	
 	public NavigableSet<Message> setHistorique(Message m){
@@ -50,7 +52,7 @@ public class Ticket implements Comparable<Ticket>{
 	
 	@Override
 	public int compareTo(Ticket t) {
-		return titre.compareTo(t.getGroupe());
+		return historique.pollLast().compareTo(t.getHistorique().pollLast());
 	}
 	
 	@Override
