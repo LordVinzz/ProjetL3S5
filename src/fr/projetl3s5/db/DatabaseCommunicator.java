@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import fr.project.l3s5.groups.Group;
-import fr.project.l3s5.groups.User;
+import fr.projectl3s5.groups.Group;
+import fr.projectl3s5.groups.User;
 import fr.projetl3s5.network.Context;
 
 public class DatabaseCommunicator {

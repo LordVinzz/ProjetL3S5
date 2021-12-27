@@ -1,4 +1,4 @@
-package fr.project.l3s5.groups;
+package fr.projectl3s5.groups;
 
 public enum Group {
 
