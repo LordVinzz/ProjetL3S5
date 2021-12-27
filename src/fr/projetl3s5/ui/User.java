@@ -17,7 +17,7 @@ public class User {
 	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
 	
 	
-	public User(String id, String nom, String prenom, Integer groupe) {
+	public User(String id, String nom, String prenom, Integer groupe, Ticket ... tickets) {
 		this.id=id;
 		this.prenom=prenom;
 		this.nom=nom;
@@ -25,11 +25,10 @@ public class User {
 		for(Group g : Group.getGroupByID(groupe)) {
 			this.groupe.add(g.toString());
 		}
-		/*
-		for(Integer g : groupe.) {
-			this.groupe.add(g);
-			listTickets.put(g, new ArrayList<Ticket>());
-		}*/
+		
+		for(Ticket t : tickets) {
+			listTickets.get(t.getGroupe()).add(t);
+		}
 	}
 
 	
@@ -62,7 +61,7 @@ public class User {
 
 		if(obj instanceof User) {
 			User caca = (User) obj;
-			return id.equals(caca.getId()) && mdp.equals(caca.getMdp()) && 
+			return id.equals(caca.getId()) && 
 					prenom.equals(caca.getPrenom()) && nom.equals(caca.getNom())
 					&& groupe == caca.getGroupe();
 		}

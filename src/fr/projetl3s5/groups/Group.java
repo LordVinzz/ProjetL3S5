@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum Group {
 
-	ELEVE(1);
+	ELEVE(1), PROFS(2), TDA1(4), TD2(8);
 
 	private int id;
 	

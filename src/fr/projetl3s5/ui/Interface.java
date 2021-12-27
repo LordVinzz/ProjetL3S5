@@ -141,9 +141,16 @@ public class Interface {
 		DefaultMutableTreeNode racine = new DefaultMutableTreeNode("Liste Tickets");
 		
 		DefaultMutableTreeNode categorie;
+		DefaultMutableTreeNode[] tabFeuilles = new DefaultMutableTreeNode[user.getNbTicketsTotal()];
+		int indice=0;
+		
 		for(String group : user.getGroupe()) {
 			categorie = new DefaultMutableTreeNode(group);
-			racine.add(group);
+			racine.add(categorie);
+			for(Ticket t : user.getListTicket().get(group)) {
+				
+				tabFeuilles[indice] = new DefaultMutableTreeNode(t.getTitre());
+			}
 		}
 		
 		/*
