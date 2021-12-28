@@ -1,6 +1,5 @@
 package fr.projetl3s5.ui;
 
-import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
@@ -14,12 +13,12 @@ public class Ticket implements Comparable<Ticket>{
 	private NavigableSet<Message> historique = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
 	private User createur;
 	
-	public Ticket(String titre, Group groupe, List<Message> historique, User createur) {
+	public Ticket(String titre, Group groupe, User createur, Message... messages) {
 		this.titre=titre;
 		this.groupe=groupe;
 		this.createur=createur;
 		
-		for(Message msg : historique) {
+		for(Message msg : messages) {
 			historique.add(msg);
 		}
 	}
@@ -39,10 +38,6 @@ public class Ticket implements Comparable<Ticket>{
 	
 	public NavigableSet<Message> getHistorique() {
 		return historique;
-	}
-	
-	public Message getPremMessage() {
-		return historique.pollFirst();
 	}
 	
 	public NavigableSet<Message> setHistorique(Message m){

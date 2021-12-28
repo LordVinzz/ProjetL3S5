@@ -18,12 +18,17 @@ public class Main {
 		
 		//logs.start()==1
 		if(true) {
-			User Adolph = new User("adolph.hitler@gmail.com", "hitler", "adolph", 0b1010, null);
-			Ticket t = new Ticket("Probleme nazi", Group.PROFS, null , Adolph);
-			Adolph.setListTicket(t);
-			t.setHistorique(new Message(Adolph, 52, "Hallo\nWir haben ein Gross Problem."));
-			
-			new Interface(Adolph);
+			User adolph = new User("adolph.hitler@gmail.com", "hitler", "adolph", 0b1010);
+			Message m1 = new Message(adolph, 52, "Hallo\nWir haben ein Gross Problem.");
+			Message m2 = new Message(adolph, 56, "Halsdfsdf");
+			Message m3 = new Message(adolph, 60, "Hallosersdflem.");
+			Ticket t1 = new Ticket("Probleme nazi", Group.PROFS, adolph, m1);
+			Ticket t2 = new Ticket("Les juifs", Group.PROFS, adolph, m2);
+			//t1.setHistorique(m2);
+			//t2.setHistorique(m3);
+			adolph.setListTicket(t1);
+			adolph.setListTicket(t2);
+			new Interface(adolph);
 		}
 	}
 	
