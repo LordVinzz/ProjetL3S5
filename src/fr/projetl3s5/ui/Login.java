@@ -1,10 +1,14 @@
 package fr.projetl3s5.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JFrame;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,79 +33,67 @@ public class Login implements Context {
 	}
 
 	public void checkChoice(int choice, JTextField user, JPasswordField pass) {
-		if(choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+		if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
-		JSONObject jObject = createCredentials(user, pass);
-		try {
-			client.getOut().writeObject(new ConnectionPacket(jObject.toString()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		client.pendExecution(this);
+		
 	}
-	
+
 	public void checkCredentials(JSONObject jsonObject) {
 		lastCredentials = jsonObject;
 		isUserAllowed = jsonObject.getString("Status").equals("valid");
 		System.out.println(lastCredentials);
 	}
-	
+
 	public JSONObject getLastCredentials() {
 		return lastCredentials;
 	}
+
 	
-	private JSONObject createCredentials(JTextField user, JPasswordField pass) {
-		JSONObject jObject = new JSONObject("{}");
-		jObject.put("username", user.getText());
-		jObject.put("passwordHash", MD5(new String(pass.getPassword())));
-		return jObject;
-	}
-	
-	public String MD5(String md5) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] array = md.digest(md5.getBytes());
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < array.length; ++i) {
-				sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-			}
-			return sb.toString();
-		} catch (NoSuchAlgorithmException e) {}
-		return null;
-	}
 
 	private void createWindow() {
-		JPanel panel = new JPanel();
-		JFrame frame = new JFrame("Facebook");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JLabel labelUser = new JLabel("Identifiant : ");
-		JTextField usernameTextbox = new JTextField(20);
-		JLabel labelPassword = new JLabel("Mot de passe : ");
-		JPasswordField passwordTextbox = new JPasswordField(20);
+		JLabel labelUser = new JLabel("Identifiant: ");
+		JLabel labelPass = new JLabel("Mot de Passe: ");
+		JTextField textUser = new JTextField(20);
+		JPasswordField fieldPass = new JPasswordField(20);
+		JButton valider = new JButton("Valider");
+		valider.addActionListener(new ValiderId(fieldPass, textUser, client, this));
+		
+		// create a new panel with GridBagLayout manager
+		JPanel newPanel = new JPanel(new GridBagLayout());
 
-		panel.add(labelUser);
-		panel.add(usernameTextbox);
-		panel.add(labelPassword);
-		panel.add(passwordTextbox);
-		
-		frame.add(panel);
-		panel.setV
-		frame.pack();
-		frame.setLocation(400, 150);
-		frame.setSize(900, 600);
-		frame.setVisible(true);
-		
-//		int choice = JOptionPane.showOptionDialog(null, panel, "Connexion au serveur", JOptionPane.NO_OPTION,
-//				JOptionPane.PLAIN_MESSAGE, null, OPTIONS, OPTIONS[0]);
-		
-//		checkChoice(choice, usernameTextbox, passwordTextbox);
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(10, 10, 10, 10);
+
+		// add components to the panel
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		newPanel.add(labelUser, constraints);
+
+		constraints.gridx = 1;
+		newPanel.add(textUser, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		newPanel.add(labelPass, constraints);
+
+		constraints.gridx = 1;
+		newPanel.add(fieldPass, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.CENTER;
+		newPanel.add(valider, constraints);
+
+		newPanel.setVisible(true);
 	}
 
 	public void start() {
 //		while(!isUserAllowed) {
-			createWindow();
+		createWindow();
 //		}
 	}
 
