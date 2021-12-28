@@ -2,3 +2,23 @@
  ------+------------+-------+-------
    1000|         100|     10|      1
 -------+------------+-------+-------
+
+{
+  "Title": "Bonjouuur",
+  "Group": 1,
+  "TotalMembers": 70,
+  "Messages": [
+    {
+      "user": "michel",
+      "date": 1234,
+      "content": "bonjour je vais pas bien lol",
+      "readby" : 50
+    },
+    {
+      "user": "micjhel",
+      "date": 3456,
+      "content": "bojour je vais bien",
+      "readby": 25
+    }
+  ]
+}

@@ -1,45 +1,46 @@
 package fr.projetl3s5.ui;
 
-public class Message implements Comparable<Message>{
-	private User createur;
-	private int dateEmise;
-	private String contenu;
-	
-	public Message(User createur, int dateEmise, String contenu) {
-		this.createur=createur;
-		this.dateEmise=dateEmise;
-		this.contenu=contenu;
+public class Message implements Comparable<Message> {
+
+	private User creator;
+	private int uploadDate;
+	private String content;
+
+	public Message(User creator, int uploadDate, String content) {
+		this.creator = creator;
+		this.uploadDate = uploadDate;
+		this.content = content;
 	}
-	
-	public int getDateEmise() {
-		return dateEmise;
+
+	public int getUploadDate() {
+		return uploadDate;
 	}
-	
-	public String getContenu() {
-		return contenu;
+
+	public String getContent() {
+		return content;
 	}
-	
-	public User getCreateur() {
-		return createur;
+
+	public User getCreator() {
+		return creator;
 	}
-	
+
 	@Override
 	public int compareTo(Message m) {
-		int compar = -dateEmise+m.getDateEmise();
-		if(compar==0) {
-			return contenu.compareTo(m.getContenu());
+		int compar = -uploadDate + m.getUploadDate();
+		if (compar == 0) {
+			return content.compareTo(m.getContent());
 		}
 		return compar;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Message) {
-			Message caca = (Message) obj;
-			return createur.equals(caca.getCreateur()) && dateEmise==caca.getDateEmise()
-					&& contenu.equals(caca.getContenu());
+		if (obj instanceof Message) {
+			Message message = (Message) obj;
+			return creator.equals(message.getCreator()) && uploadDate == message.getUploadDate()
+					&& content.equals(message.getContent());
 		}
 		return false;
 	}
-	
+
 }

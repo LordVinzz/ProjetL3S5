@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+
 import fr.projetl3s5.groups.Group;
 
 public class User {
@@ -66,10 +67,11 @@ public class User {
 	}
 
 	public void setTicketList(Ticket t) {
-		String g = t.getGroupe();
+		String g = t.getGroup().toString();
 		if (groupe.contains(g)) {
 			listTickets.get(g).add(t);
 			nbTotalTicket++;
 		}
 	}
+
 }

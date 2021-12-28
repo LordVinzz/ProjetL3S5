@@ -3,12 +3,9 @@ package fr.projetl3s5.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,15 +15,12 @@ import javax.swing.JTextField;
 import org.json.JSONObject;
 
 import fr.projetl3s5.network.Client;
-import fr.projetl3s5.network.ConnectionPacket;
 import fr.projetl3s5.network.Context;
 
 public class Login implements Context {
 
 	private Client client;
-	private boolean isUserAllowed = false;
 	private JSONObject lastCredentials = null;
-	private static final String[] OPTIONS = new String[] { "Valider", "Quitter" };
 
 	public Login(Client client) {
 		this.client = client;
@@ -41,29 +35,37 @@ public class Login implements Context {
 
 	public void checkCredentials(JSONObject jsonObject) {
 		lastCredentials = jsonObject;
-		isUserAllowed = jsonObject.getString("Status").equals("valid");
-		System.out.println(lastCredentials);
 	}
 
 	public JSONObject getLastCredentials() {
 		return lastCredentials;
 	}
 
-	
-
 	private void createWindow() {
-		
+		JFrame frame = new JFrame("Connexion au serveur");
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel labelUser = new JLabel("Identifiant: ");
 		JLabel labelPass = new JLabel("Mot de Passe: ");
 		JTextField textUser = new JTextField(20);
 		JPasswordField fieldPass = new JPasswordField(20);
 		JButton valider = new JButton("Valider");
-		valider.addActionListener(new ValiderId(fieldPass, textUser, client, this));
+		valider.addActionListener(new IDValidator(fieldPass, textUser, client, this));
 		
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
 		GridBagConstraints constraints = new GridBagConstraints();
+		setValues(labelUser, labelPass, textUser, fieldPass, valider, newPanel, constraints);
+
+		frame.add(newPanel);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+	}
+
+	private void setValues(JLabel labelUser, JLabel labelPass, JTextField textUser, JPasswordField fieldPass,
+			JButton valider, JPanel newPanel, GridBagConstraints constraints) {
 		constraints.anchor = GridBagConstraints.WEST;
 		constraints.insets = new Insets(10, 10, 10, 10);
 
@@ -87,14 +89,10 @@ public class Login implements Context {
 		constraints.gridwidth = 2;
 		constraints.anchor = GridBagConstraints.CENTER;
 		newPanel.add(valider, constraints);
-
-		newPanel.setVisible(true);
 	}
 
 	public void start() {
-//		while(!isUserAllowed) {
 		createWindow();
-//		}
 	}
 
 }

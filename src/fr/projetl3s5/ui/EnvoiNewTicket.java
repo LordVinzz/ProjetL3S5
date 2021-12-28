@@ -20,7 +20,7 @@ public class EnvoiNewTicket implements ActionListener {
 	User user;
 	
 	
-	public EnvoiNewTicket(JTextArea msg, JTextField nomS, JComboBox listG, User user) {
+	public EnvoiNewTicket(JTextArea msg, JTextField nomS, JComboBox<String> listG, User user) {
 		this.msg = msg;
 		this.nomS = nomS;
 		this.listG=listG;
