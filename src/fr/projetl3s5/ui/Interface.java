@@ -118,9 +118,9 @@ public class Interface {
 	}
 	
 	public JPanel createTicket() {
-		Font font = new Font("aaa", Font.BOLD, 15);
+		Font font = new Font("Lucida Console", Font.BOLD, 15);
 		JLabel titre = new JLabel("Creer un fil de discussion");
-		titre.setFont(new Font("aaa", Font.BOLD, 20));
+		titre.setFont(new Font("Lucida Console", Font.BOLD, 20));
 		
 		JLabel selectG = new JLabel("Selection de groupe :");
 		selectG.setFont(font);

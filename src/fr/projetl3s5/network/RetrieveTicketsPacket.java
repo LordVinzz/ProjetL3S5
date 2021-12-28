@@ -20,7 +20,7 @@ public class RetrieveTicketsPacket extends Packet {
 	}
 
 	@Override
-	public void execute(Context ctx) throws IOException {
+	public JSONObject execute(Context ctx) throws IOException {
 		if (ctx instanceof ServerThread) {
 			ServerThread serv = (ServerThread) ctx;
 			JSONObject jObject = new JSONObject(content);
@@ -35,6 +35,7 @@ public class RetrieveTicketsPacket extends Packet {
 
 			}
 		}
+		return null;
 	}
 
 }

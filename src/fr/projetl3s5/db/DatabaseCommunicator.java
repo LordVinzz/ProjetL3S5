@@ -22,31 +22,37 @@ public class DatabaseCommunicator {
 	private static final String USER = "admin";
 	private static final String PWD = "admin";
 	
-	private static Connection connection;
+	private static Connection connection = getConnectionWrapper();
 	private static Statement statement;
 	private static ResultSet resultSet;
 	
-	public DatabaseCommunicator() {
+	private static Connection getConnectionWrapper() {
 		try {
-			connection = DriverManager.getConnection(DATABASE_URL, USER, PWD);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.exit(1);
+			return DriverManager.getConnection(DATABASE_URL, USER, PWD);
+		}catch(SQLException e) {
+			return null;
 		}
 	}
 	
-	public static synchronized boolean isUserExisting(String username, String passwordHash) {
+	public static synchronized JSONObject getUser(String username, String passwordHash) {
+		JSONObject jObject = new JSONObject("{}");
 		try {
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(String.format(
-					"SELECT * FROM userstable WHERE userstable.username = %s AND userstable.passwordHash = %s", username, passwordHash
+					"SELECT * FROM userstable WHERE userstable.username = '%s' AND userstable.passwordHash = '%s'", username, passwordHash
 					)
 			);
 			resultSet.next();
-			return true;
+			
+			jObject = new JSONObject("{}");
+			jObject.put("Status", "valid");
+			jObject.put("Name", resultSet.getString("name"));
+			jObject.put("FName", resultSet.getString("fname"));
 		} catch (SQLException e) {
-			return false;
+			jObject.put("Status", "invalid");
+			jObject.put("ConnectionToken", "null");
 		}
+		return jObject;
 	}
 	
 	public static synchronized List<JSONObject> getTickets(String username, int group) {
@@ -56,7 +62,7 @@ public class DatabaseCommunicator {
 			
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(String.format(
-					"SELECT * FROM threadstable WHERE threadstable.fPoster = %s AND threadstable.group = %i", username, group));
+					"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable.group = '%i'", username, group));
 			
 			while(resultSet.next()) {
 				File file = new File(String.format("serverhistory/%s.json", resultSet.getString("filename")));

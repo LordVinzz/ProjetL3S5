@@ -1,64 +1,108 @@
 package fr.projetl3s5.ui;
 
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class Login {
-	
-	public Login() {
-		
+import org.json.JSONObject;
+
+import fr.projetl3s5.network.Client;
+import fr.projetl3s5.network.ConnectionPacket;
+import fr.projetl3s5.network.Context;
+
+public class Login implements Context {
+
+	private Client client;
+	private boolean isUserAllowed = false;
+	private JSONObject lastCredentials = null;
+	private static final String[] OPTIONS = new String[] { "Valider", "Quitter" };
+
+	public Login(Client client) {
+		this.client = client;
 	}
-	
-	public static int verifButton(int option, JPanel panel, JTextField user, JPasswordField pass) {
 
-		switch (option) {
-		case 1: // mdp oublié
-			JOptionPane.showMessageDialog(null, "Tant pis pour toi", "Mot de passe oublié",
-					JOptionPane.WARNING_MESSAGE);
-			return 0;
-
-		case JOptionPane.CLOSED_OPTION: // bouton rouge
-			return 2;
-
-		case 2:
-			return 2; // Quitter
+	public void checkChoice(int choice, JTextField user, JPasswordField pass) {
+		if(choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+			System.exit(0);
 		}
-		// Valider
-		JOptionPane.showMessageDialog(null, "Tu t'es trompé mdrr", "Identifiants invalides", JOptionPane.ERROR_MESSAGE);
-		return 0;
+		JSONObject jObject = createCredentials(user, pass);
+		try {
+			client.getOut().writeObject(new ConnectionPacket(jObject.toString()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		client.pendExecution(this);
+	}
+	
+	public void checkCredentials(JSONObject jsonObject) {
+		lastCredentials = jsonObject;
+		isUserAllowed = jsonObject.getString("Status").equals("valid");
+		System.out.println(lastCredentials);
+	}
+	
+	public JSONObject getLastCredentials() {
+		return lastCredentials;
+	}
+	
+	private JSONObject createCredentials(JTextField user, JPasswordField pass) {
+		JSONObject jObject = new JSONObject("{}");
+		jObject.put("username", user.getText());
+		jObject.put("passwordHash", MD5(new String(pass.getPassword())));
+		return jObject;
+	}
+	
+	public String MD5(String md5) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] array = md.digest(md5.getBytes());
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < array.length; ++i) {
+				sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+			}
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {}
+		return null;
 	}
 
-	public int login() { // Affichage de la fenêtre de connection
-
+	private void createWindow() {
 		JPanel panel = new JPanel();
-		JLabel labeluser = new JLabel("Identifiant:"); // affichage du texte
-		JTextField user = new JTextField(20); // affichage de la zone à taper
-		JLabel labelpassword = new JLabel("Mot de passe:");
-		JPasswordField pass = new JPasswordField(20);
-
-		panel.add(labeluser);
-		panel.add(user); // on ajoute tout le bordel
-		panel.add(labelpassword);
-		panel.add(pass);
-
-		String[] options = new String[] { "Valider", "Mot de passe oublié", "Quitter" };
-
-		int option = JOptionPane.showOptionDialog(null, panel, "Connexion au serveur", JOptionPane.NO_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, options, options[0]); // Retourne le bouton sur lequel on a cliqué
-
-		return verifButton(option, panel, user, pass);
-	}
-	
-	public int start() {
-		int valRetour=login();
+		JFrame frame = new JFrame("Facebook");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		while (valRetour == 0) {
-			valRetour = login();
-		}
+		JLabel labelUser = new JLabel("Identifiant : ");
+		JTextField usernameTextbox = new JTextField(20);
+		JLabel labelPassword = new JLabel("Mot de passe : ");
+		JPasswordField passwordTextbox = new JPasswordField(20);
 
-		return valRetour;
+		panel.add(labelUser);
+		panel.add(usernameTextbox);
+		panel.add(labelPassword);
+		panel.add(passwordTextbox);
+		
+		frame.add(panel);
+		panel.setV
+		frame.pack();
+		frame.setLocation(400, 150);
+		frame.setSize(900, 600);
+		frame.setVisible(true);
+		
+//		int choice = JOptionPane.showOptionDialog(null, panel, "Connexion au serveur", JOptionPane.NO_OPTION,
+//				JOptionPane.PLAIN_MESSAGE, null, OPTIONS, OPTIONS[0]);
+		
+//		checkChoice(choice, usernameTextbox, passwordTextbox);
 	}
+
+	public void start() {
+//		while(!isUserAllowed) {
+			createWindow();
+//		}
+	}
+
 }
