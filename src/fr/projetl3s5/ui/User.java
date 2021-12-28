@@ -17,7 +17,7 @@ public class User {
 	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
 	
 	
-	public User(String id, String nom, String prenom, Integer groupe, Ticket ... tickets) {
+	public User(String id, String nom, String prenom, Integer groupe) {
 		this.id=id;
 		this.prenom=prenom;
 		this.nom=nom;
@@ -26,8 +26,8 @@ public class User {
 			this.groupe.add(g.toString());
 		}
 		
-		for(Ticket t : tickets) {
-			listTickets.get(t.getGroupe()).add(t);
+		for(Group g : Group.values()) {
+			listTickets.put(g.toString(), new ArrayList<>());
 		}
 	}
 

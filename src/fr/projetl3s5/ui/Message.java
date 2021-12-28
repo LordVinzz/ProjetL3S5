@@ -25,7 +25,7 @@ public class Message implements Comparable<Message>{
 	
 	@Override
 	public int compareTo(Message m) {
-		int compar = dateEmise-m.getDateEmise();
+		int compar = -dateEmise+m.getDateEmise();
 		if(compar==0) {
 			return contenu.compareTo(m.getContenu());
 		}
