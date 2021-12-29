@@ -2,6 +2,7 @@ package fr.projetl3s5.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,11 +19,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -38,6 +42,7 @@ public class Interface2 {
 	
 	DefaultMutableTreeNode root, leafGroup[];
 	DefaultTreeModel model;
+	private JScrollPane scrollPane;
 
 	public JPanel displayTicketList() {
 		JPanel panel = new JPanel();
@@ -185,36 +190,66 @@ public class Interface2 {
 
 		ticketList = displayTicketList();
 		messageHistory = new JPanel(new GridBagLayout());
+		scrollPane = new JScrollPane(messageHistory);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		writingZone = defaultWritingZone();
 		center = new JPanel(new BorderLayout());
 		
 		{
 			GridBagConstraints gbc = new GridBagConstraints();
 			
-			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.gridx = 0;
 	        gbc.gridy = 0;
 	        gbc.weightx = 1.0;
 	        gbc.weighty = 0.3;
-
+	        
+	        gbc.insets = new Insets(10,10,10,10);
+	        gbc.ipadx = 10;
+	        gbc.ipady = 10;
+	        for(int i = 0; i < 50; i++) {
+	        gbc.gridy = i;
+	        JPanel test = new JPanel(new GridBagLayout());
+			GridBagConstraints gbcPanel = new GridBagConstraints();
 			
-			JPanel test = new JPanel();
-			BoxLayout bL = new BoxLayout(test, BoxLayout.PAGE_AXIS);
-			test.setLayout(bL);
 			test.setBorder(BorderFactory.createLineBorder(Color.black));
-
 			
-			test.add(new JLabel("jlabel de tester\n"));
+			gbcPanel.anchor = GridBagConstraints.LINE_START;
+			gbcPanel.gridx = 0;
+			gbcPanel.gridy = 0;
+			gbcPanel.weightx = 0;
+			gbcPanel.weighty = 0.5;
+			test.add(new JLabel("jeanmichel@univ-tlse3f.r________________"), gbcPanel);
 			
-			test.add(new JLabel("jlabel de tester\n"));
+			gbcPanel.anchor = GridBagConstraints.LINE_END;
+			gbcPanel.gridx = 0;
+			gbcPanel.gridy = 0;
+			gbcPanel.weightx = 0;
+			gbcPanel.weighty = 0;
+			test.add(new JLabel("12h12m12s 12/12/12"), gbcPanel);
 			
-			test.add(new JLabel("d de tester\n"));			
+			gbcPanel.insets = new Insets(10,0,0,0);
+			gbcPanel.anchor = GridBagConstraints.LINE_START;
+			gbcPanel.fill = GridBagConstraints.HORIZONTAL;
+			gbcPanel.gridx = 0;
+			gbcPanel.gridy = 1;
+			gbcPanel.weightx = 1;
+			gbcPanel.weighty =1;
+			JTextArea j = new JTextArea("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean in vehicula lectus. Integer ornare erat pharetra, sodales ante at, suscipit orci. Cras sed mauris accumsan, lobortis leo non, fringilla elit. Vestibulum tristique iaculis ultricies. Aliquam erat volutpat. Aenean vehicula ante et venenatis aliquam. Nam ac fermentum orci. Morbi ipsum sem, fringilla at varius sit amet, condimentum aliquet nisl. Duis vulputate justo ante, non dapibus sem aliquam non. Cras vestibulum, eros vitae vulputate vehicula, nisl nibh lobortis nisi, elementum rutrum mauris tortor sit amet sapien.\r\n"
+					+ "\r\n" + i
+					+ "Praesent porta eleifend quam, in blandit justo bibendum quis. Nullam egestas nibh id nibh mollis, eu tincidunt orci mattis. Quisque quis ex at dui ornare tempus eu at sem. Pellentesque varius lectus augue, vitae posuere justo mattis eget. Mauris ultricies luctus purus, et porta leo laoreet eu. Proin id lacus consectetur, ornare dolor id, eleifend velit. Duis consectetur nibh in sapien tempor, vel finibus diam pulvinar. Nam tristique tempor risus, quis tristique sem molestie eget.");
+			j.setEditable(false);
+			j.setLineWrap(true);
+			j.setWrapStyleWord(true);
+			j.setBackground(new Color(0xEE, 0xEE, 0xEE));
+			test.add(j, gbcPanel);			
 
 			messageHistory.add(test, gbc);
+	        }
 		}
 		
-		center.add(messageHistory, BorderLayout.PAGE_START);
+		center.add(scrollPane, BorderLayout.PAGE_START);
 		center.add(writingZone, BorderLayout.CENTER);
 		
 		tab1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ticketList, center);
