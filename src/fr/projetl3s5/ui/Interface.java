@@ -19,13 +19,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import fr.projetl3s5.groups.Group;
 
 public class Interface {
 
 	private User user;
-
+	DefaultMutableTreeNode root, leafGroup[];
+	DefaultTreeModel model;
+	
 	public JPanel affichMessage(Message t) {
 		JPanel affich = new JPanel();
 
@@ -34,24 +37,34 @@ public class Interface {
 
 	public JPanel affichListTickets() {
 		JPanel panel = new JPanel();
-		DefaultMutableTreeNode racine = new DefaultMutableTreeNode("Liste Tickets");
-		DefaultMutableTreeNode[] categorie = new DefaultMutableTreeNode[Group.values().length];
-		int indGroup = 0;
-
-		for (String group : user.getGroupe()) {
-			categorie[indGroup] = new DefaultMutableTreeNode(group);
-
-			for (Ticket t : user.getListTicket().get(group)) {
-				categorie[indGroup].add(new DefaultMutableTreeNode(t.getTitre()));
-			}
-			racine.add(categorie[indGroup]);
-			indGroup++;
-		}
-		JTree arbre = new JTree(racine);
+		root = new DefaultMutableTreeNode("Liste Tickets");
+		
+		updateTicketList();
+		
+		JTree arbre = new JTree(root);
+		model = (DefaultTreeModel) arbre.getModel();
 		panel.add(arbre);
 		return panel;
 	}
 
+	public void updateTicketList() {
+		root.removeAllChildren();
+		leafGroup = new DefaultMutableTreeNode[Group.values().length];
+		int indGroup = 0;
+		
+		for (String group : user.getGroupe()) {
+			
+			leafGroup[indGroup] = new DefaultMutableTreeNode(group);
+
+			for (Ticket t : user.getListTicket().get(group)) {
+				leafGroup[indGroup].add(new DefaultMutableTreeNode(t.getTitre()));
+			}
+			root.add(leafGroup[indGroup]);
+			indGroup++;
+		}
+		if(model != null) model.reload();
+	}
+	
 	public JPanel zoneEcrire() {
 		JPanel ecrire = new JPanel();
 		JTextArea textArea = new JTextArea(3, 70);
@@ -176,8 +189,9 @@ public class Interface {
 
 	public Interface(User user) {
 		this.user = user;
+		this.user.setInterface(this);
 
-		JFrame frame = new JFrame("Facebook");
+		JFrame frame = new JFrame("Facebook (même si mnt c'est meta mdr");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCompToFrame(frame);
 

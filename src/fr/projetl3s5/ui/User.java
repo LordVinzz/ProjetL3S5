@@ -1,25 +1,41 @@
 package fr.projetl3s5.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import org.json.JSONObject;
 
 import fr.projetl3s5.groups.Group;
+import fr.projetl3s5.network.Client;
+import fr.projetl3s5.network.Context;
+import fr.projetl3s5.network.RetrieveTicketsPacket;
 
-public class User {
+public class User implements Context{
 	
 	private String id, name, fName;
+	private Client client;
 	private int nbTotalTicket = 0;
+	private int groupsMask;
 
 	private List<String> groupe = new ArrayList<>();
 	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
+	private Interface interfacz;
 
-	public User(String id, String name, String fName, Integer group) {
+	public User(String id, String name, String fName) {
 		this.id = id;
 		this.fName = fName;
 		this.name = name;
+	}
+	
+	public User(String id, String name, String fName, Integer group, Client client) {
+		this.id = id;
+		this.fName = fName;
+		this.name = name;
+		this.client = client;
+		this.groupsMask = group;
 
 		for (Group g : Group.getGroupsByID(group)) {
 			this.groupe.add(g.toString());
@@ -28,8 +44,22 @@ public class User {
 		for (Group g : Group.values()) {
 			listTickets.put(g.toString(), new ArrayList<>());
 		}
+		
+		getTicketsFromServer();
+		client.pendExecution(this);
 	}
 
+
+	public void getTicketsFromServer() {
+		try {
+			JSONObject jObject = new JSONObject("{}");
+			jObject.put("username", id);
+			jObject.put("group", groupsMask);
+			client.getOut().writeObject(new RetrieveTicketsPacket(jObject.toString()));
+		} catch (IOException e) {
+		}
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -66,12 +96,20 @@ public class User {
 		return false;
 	}
 
-	public void setTicketList(Ticket t) {
+	public synchronized void addToTicketList(Ticket t) {
 		String g = t.getGroup().toString();
 		if (groupe.contains(g)) {
 			listTickets.get(g).add(t);
 			nbTotalTicket++;
 		}
+	}
+
+	public void setInterface(Interface interface1) {
+		this.interfacz = interface1;
+	}
+
+	public void updateInterface() {
+		this.interfacz.updateTicketList();
 	}
 
 }

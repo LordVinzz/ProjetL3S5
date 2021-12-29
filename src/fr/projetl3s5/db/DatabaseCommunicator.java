@@ -55,19 +55,26 @@ public class DatabaseCommunicator {
 		return jObject;
 	}
 	
-	public static synchronized List<JSONObject> getTickets(String username, int group) {
+	public static synchronized List<String> getTickets(String id, int group) {
 		try {
+			int mask = 1;
+			List<String> jList = new ArrayList<>();
 			
-			List<JSONObject> jList = new ArrayList<>();
-			
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(String.format(
-					"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable.group = '%i'", username, group));
-			
-			while(resultSet.next()) {
-				File file = new File(String.format("serverhistory/%s.json", resultSet.getString("filename")));
-				JSONObject jObject = new JSONObject(new String(Files.readAllBytes(file.toPath())));
-				jList.add(jObject);
+			while(mask <= 0b1000000000000000) {
+				if((mask & group) != 0) {
+					
+					statement = connection.createStatement();
+					resultSet = statement.executeQuery(String.format(
+							"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable.group = '%d'", id, mask));
+					
+					while(resultSet.next()) {
+						File file = new File( String.format("serverhistory/%s.json", resultSet.getString("filename")) );
+						JSONObject jObject = new JSONObject(new String(Files.readAllBytes(file.toPath())));
+						jList.add(jObject.toString());
+					}
+				}
+				
+				mask <<= 1;
 			}
 			
 			return jList;

@@ -18,7 +18,7 @@ public class ConnectionPacket extends Packet{
 	}
 	
 	@Override
-	public JSONObject execute(Context ctx) throws IOException {
+	public void execute(Context ctx) throws IOException {
 		if(ctx instanceof ServerThread) {
 			ServerThread serv = (ServerThread)ctx;
 			JSONObject jObject = new JSONObject(content);
@@ -30,7 +30,6 @@ public class ConnectionPacket extends Packet{
 			Login login = (Login)ctx;
 			login.checkCredentials(new JSONObject(content));
 		}
-		return null;
 	}
 
 }

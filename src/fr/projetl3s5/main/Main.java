@@ -13,15 +13,29 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-//		Server server = Server.getInstance();
-//		Server.init();
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				Server server = Server.getInstance();
+				Server.init();
+			}
+		};
+		t.start();
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		Client client = new Client("localhost", 13337);
 		client.start();
-		
-		Login logs= new Login(client);
-		
-		logs.start();
+		User user = new User("root@univ-tlse3.fr", "Root", "Root", 15, client);
+		Interface interfacz = new Interface(user);
+//		
+//		Login logs= new Login(client);
+//		
+//		logs.start();
 //		if(true) {
 //			User adolph = new User("adolph.hitler@gmail.com", "hitler", "adolph", 0b1010);
 //			Message m1 = new Message(adolph, 52, "Hallo\nWir haben ein Gross Problem.");
@@ -35,6 +49,8 @@ public class Main {
 //			adolph.setListTicket(t2);
 //			new Interface(adolph);
 //		}
+		
+		
 	}
 	
 }

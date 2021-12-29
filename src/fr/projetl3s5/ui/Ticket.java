@@ -39,8 +39,7 @@ public class Ticket implements Comparable<Ticket>{
 			User user = new User(
 				jO.getString("Id"),
 				jO.getString("Name"),
-				jO.getString("FName"),
-				group.getId()
+				jO.getString("FName")
 			);
 			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"));
 			history.add(msg);

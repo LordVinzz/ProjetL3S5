@@ -1,0 +1,23 @@
+{
+    "Title": "Bonjouuur",
+    "Group": 1,
+    "TotalMembers": 70,
+    "Messages": [
+      {
+        "Name": "michel",
+        "FName": "desbois",
+        "Id": "micheldesbois1@irit.fr",
+        "Date": 1234,
+        "Content": "bonjour je vais pas bien lol",
+        "ReadBy" : 50
+      },
+      {
+        "Name": "kevin",
+        "FName": "desbois",
+        "Id": "kevindesbois1@irit.fr",
+        "Date": 3456,
+        "Content": "bojour je vais bien",
+        "ReadBy": 25
+      }
+    ]
+  }
