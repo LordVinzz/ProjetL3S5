@@ -5,11 +5,17 @@ public class Message implements Comparable<Message> {
 	private User creator;
 	private int uploadDate;
 	private String content;
+	private int readBy;
+	private int nbTotalMembers;
+	private MsgState state;
 
-	public Message(User creator, int uploadDate, String content) {
+	public Message(User creator, int uploadDate, String content, int readBy, int nbTotalMembers, MsgState state) {
 		this.creator = creator;
 		this.uploadDate = uploadDate;
 		this.content = content;
+		this.readBy=readBy;
+		this.nbTotalMembers=nbTotalMembers;
+		this.state = state;
 	}
 
 	public int getUploadDate() {
@@ -22,6 +28,22 @@ public class Message implements Comparable<Message> {
 
 	public User getCreator() {
 		return creator;
+	}
+	
+	public int getReadBy() {
+		return readBy;
+	}
+
+	public int getNbTotalMembers() {
+		return nbTotalMembers;
+	}
+	
+	public MsgState getState() {
+		return state;
+	}
+	
+	public void setState(MsgState s) {
+		state=s;
 	}
 
 	@Override

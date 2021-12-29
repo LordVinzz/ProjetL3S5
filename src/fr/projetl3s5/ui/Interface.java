@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -28,19 +29,67 @@ public class Interface {
 	private User user;
 	DefaultMutableTreeNode root, leafGroup[];
 	DefaultTreeModel model;
-	
-	public JPanel affichMessage(Message t) {
-		JPanel affich = new JPanel();
+	JPanel msgHistory = new JPanel();
 
+
+	public JPanel affichMessage(Message t) {
+		JPanel affich = new JPanel(new GridBagLayout());
+		affich.setBorder(BorderFactory.createLineBorder(Color.black));
+		JLabel affichUser = new JLabel("De : " + t.getCreator().getPrenom() + " " + t.getCreator().getNom());
+		JLabel affichDate = new JLabel("A : " + t.getUploadDate());
+		JLabel affichContent = new JLabel(t.getContent());
+		int readBy=t.getReadBy();
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(10, 10, 10, 10);
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		affich.add(affichUser, constraints);
+
+		constraints.gridx = 1;
+		affich.add(affichDate, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		affich.add(affichContent, constraints);
+
+		constraints.gridx = 1;
+		constraints.gridy = 2;
+		
+		// constraints.gridwidth = 2;
+		
+		if(readBy==0) {
+			affich.setBackground(Color.RED);
+		}
+		
+		else if(readBy<t.getNbTotalMembers()) {
+			affich.setBackground(Color.ORANGE);
+		}
+		
+		else if(readBy==t.getNbTotalMembers()) {
+			affich.setBackground(Color.GREEN);
+		}
+		
+		else {
+			affich.setBackground(Color.GRAY);
+		}
 		return affich;
 	}
-
+	
+	public void setMsgHistory(Ticket t) {
+		for(Message msg : t.getHistory()) {
+			msgHistory.add(affichMessage(msg));
+		}
+	}
+	
 	public JPanel affichListTickets() {
 		JPanel panel = new JPanel();
 		root = new DefaultMutableTreeNode("Liste Tickets");
-		
+
 		updateTicketList();
-		
+
 		JTree arbre = new JTree(root);
 		model = (DefaultTreeModel) arbre.getModel();
 		panel.add(arbre);
@@ -51,20 +100,26 @@ public class Interface {
 		root.removeAllChildren();
 		leafGroup = new DefaultMutableTreeNode[Group.values().length];
 		int indGroup = 0;
+		JButton[] ticketButton = new JButton[user.getNbTicketsTotal()];
+		int indButton=0;
 		
 		for (String group : user.getGroupe()) {
 			
 			leafGroup[indGroup] = new DefaultMutableTreeNode(group);
 
 			for (Ticket t : user.getListTicket().get(group)) {
-				leafGroup[indGroup].add(new DefaultMutableTreeNode(t.getTitre()));
+				ticketButton[indButton]= new JButton(t.getTitre());
+				ticketButton[indButton].addActionListener(new AffichHistory(this, t));
+				
+				leafGroup[indGroup].add(new DefaultMutableTreeNode(ticketButton[indButton]));
+				indButton++;
 			}
 			root.add(leafGroup[indGroup]);
 			indGroup++;
 		}
 		if(model != null) model.reload();
 	}
-	
+
 	public JPanel zoneEcrire() {
 		JPanel ecrire = new JPanel();
 		JTextArea textArea = new JTextArea(3, 70);
@@ -155,14 +210,9 @@ public class Interface {
 
 	public JPanel histMsg() {
 
-		JLabel titre = new JLabel("Historique des messages");
+		JLabel titre = new JLabel("Sélectionner un ticket !");
 		JPanel histMsg = new JPanel();
-
 		histMsg.add(titre);
-		/*
-		 * List<JPanel> listMsg = user.get; JList<JPanel> jListMsg = new
-		 * JList<>((JPanel[]) listMsg.toArray());
-		 */
 
 		return histMsg;
 	}
@@ -190,7 +240,8 @@ public class Interface {
 	public Interface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
-
+		msgHistory.setLayout(new BoxLayout(msgHistory, BoxLayout.Y_AXIS));
+		
 		JFrame frame = new JFrame("Facebook (même si mnt c'est meta mdr");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCompToFrame(frame);

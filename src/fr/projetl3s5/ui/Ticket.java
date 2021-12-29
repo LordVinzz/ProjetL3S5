@@ -13,7 +13,6 @@ public class Ticket implements Comparable<Ticket>{
 	
 	private String title;
 	private int totalMember;
-	
 	private Group group;
 	private NavigableSet<Message> history = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
 	private User creator;
@@ -41,7 +40,7 @@ public class Ticket implements Comparable<Ticket>{
 				jO.getString("Name"),
 				jO.getString("FName")
 			);
-			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"));
+			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"),  jO.getInt("ReadBy"), jO.getInt("TotalMembers"), MsgState.EN_ATTENTE);
 			history.add(msg);
 		}
 	}
@@ -59,18 +58,22 @@ public class Ticket implements Comparable<Ticket>{
 		return creator;
 	}
 	
-	public NavigableSet<Message> getHistorique() {
+	public int getTotalMember() {
+		return totalMember;
+	}
+	
+	public NavigableSet<Message> getHistory() {
 		return history;
 	}
 	
-	public NavigableSet<Message> setHistorique(Message m){
+	public NavigableSet<Message> setHistory(Message m){
 		history.add(m);
 		return history;
 	}
 	
 	@Override
 	public int compareTo(Ticket t) {
-		return history.pollLast().compareTo(t.getHistorique().pollLast());
+		return history.pollLast().compareTo(t.getHistory().pollLast());
 	}
 	
 	@Override
