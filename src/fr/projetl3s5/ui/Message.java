@@ -1,5 +1,14 @@
 package fr.projetl3s5.ui;
 
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 public class Message implements Comparable<Message> {
 
 	private User creator;
@@ -63,6 +72,52 @@ public class Message implements Comparable<Message> {
 					&& content.equals(message.getContent());
 		}
 		return false;
+	}
+	
+	public JPanel toJPanel() {
+		JPanel affich = new JPanel(new GridBagLayout());
+		affich.setBorder(BorderFactory.createLineBorder(Color.black));
+		JLabel affichUser = new JLabel("De : " + getCreator().getPrenom() + " " + getCreator().getNom());
+		JLabel affichDate = new JLabel("A : " + getUploadDate());
+		JLabel affichContent = new JLabel(getContent());
+		int readBy=getReadBy();
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(10, 10, 10, 10);
+
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+
+		affich.add(affichUser, constraints);
+
+		constraints.gridx = 1;
+		affich.add(affichDate, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		affich.add(affichContent, constraints);
+
+		constraints.gridx = 1;
+		constraints.gridy = 2;
+		
+		// constraints.gridwidth = 2;
+		
+		if(readBy==0) {
+			affich.setBackground(Color.RED);
+		}
+		
+		else if(readBy<getNbTotalMembers()) {
+			affich.setBackground(Color.ORANGE);
+		}
+		
+		else if(readBy==getNbTotalMembers()) {
+			affich.setBackground(Color.GREEN);
+		}
+		
+		else {
+			affich.setBackground(Color.GRAY);
+		}
+		return affich;
 	}
 
 }

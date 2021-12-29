@@ -40,13 +40,13 @@ public class Ticket implements Comparable<Ticket>{
 				jO.getString("Name"),
 				jO.getString("FName")
 			);
-			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"),  jO.getInt("ReadBy"), jO.getInt("TotalMembers"), MsgState.EN_ATTENTE);
+			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"),  jO.getInt("ReadBy"), this.totalMember, MsgState.EN_ATTENTE);
 			history.add(msg);
 		}
 	}
 	
 	
-	public String getTitre() {
+	public String getTitle() {
 		return title;
 	}
 	
@@ -80,9 +80,14 @@ public class Ticket implements Comparable<Ticket>{
 	public boolean equals(Object obj) {
 		if(obj instanceof Ticket) {
 			Ticket ticket = (Ticket) obj;
-			return group.equals(ticket.getGroup()) && title.equals(ticket.getTitre());
+			return group.equals(ticket.getGroup()) && title.equals(ticket.getTitle());
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getTitle();
 	}
 	
 	
