@@ -75,6 +75,10 @@ public class User implements Context{
 	public List<String> getGroupe() {
 		return groupe;
 	}
+	
+	public Client getClient() {
+		return client;
+	}
 
 	public int getNbTicketsTotal() {
 		return nbTotalTicket;
@@ -109,7 +113,7 @@ public class User implements Context{
 	}
 
 	public void updateInterface() {
-		this.interfacz.updateTicketList();
+		this.interfacz.updateTreePanel();
 	}
 
 }

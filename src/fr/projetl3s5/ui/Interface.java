@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -22,7 +21,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -31,26 +29,54 @@ import fr.projetl3s5.groups.Group;
 
 public class Interface {
 
-	private User user;
+	User user;
+	JFrame frame = new JFrame("Facebook (même si mnt c'est meta mdr");;
 	DefaultMutableTreeNode root, leafGroup[];
 	DefaultTreeModel model;
+
 	JPanel msgHistory = new JPanel();
-	JFrame frame;
-	JPanel listTicket, ecrire, histMsg, center;
-	JTabbedPane onglet;
-	JSplitPane onglet1;
-	
-	public void setMsgHistory(Ticket t) {
-		for (Message msg : t.getHistory()) {
-			msgHistory.add(msg.toJPanel());
-		}
+	JPanel writeZone = createWriteZone();
+	JPanel center = createCenter();
+
+	JPanel ticketTree = createTicketTree();
+
+	JSplitPane onglet1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ticketTree, center);
+	JPanel onglet2 = createTicket();
+
+	JTabbedPane onglet = new JTabbedPane();
+	Ticket ticketCourant;
+
+	public JPanel createCenter() {
+		center = new JPanel(new BorderLayout());
+		center.add(writeZone, BorderLayout.SOUTH);
+		center.add(msgHistory, BorderLayout.CENTER);
+		return center;
 	}
 
-	public JPanel affichListTickets() {
+	public JPanel createWriteZone() {
+		
+		JTextArea textZone = new JTextArea(5, 20);
+		JButton sendButton = new JButton("Envoyer");
+		sendButton.addActionListener(new EnvoiNewMsg(textZone, ticketCourant, user));
+
+		writeZone.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10),
+				BorderFactory.createMatteBorder(2, 0, 0, 0, Color.LIGHT_GRAY)));
+		writeZone.add(textZone);
+		writeZone.add(sendButton);
+
+		return writeZone;
+	}
+
+	public JPanel createHistMsg() {
+		msgHistory.add(new JLabel("Sélectionner un ticket !"));
+		return msgHistory;
+	}
+
+	public JPanel createTicketTree() {
 		JPanel panel = new JPanel();
 		root = new DefaultMutableTreeNode("Liste Tickets");
 
-		updateTicketList();
+		setTicketTree();
 
 		JTree arbre = new JTree(root);
 		model = (DefaultTreeModel) arbre.getModel();
@@ -66,8 +92,8 @@ public class Interface {
 								.getUserObject() instanceof Ticket) {
 							Ticket ticket = (Ticket) ((DefaultMutableTreeNode) selPath.getLastPathComponent())
 									.getUserObject();
+							ticketCourant=ticket;
 							setMsgHistory(ticket);
-							updateFrame();
 						}
 					} else if (e.getClickCount() == 2) {
 					}
@@ -79,13 +105,42 @@ public class Interface {
 		return panel;
 	}
 
-	public void updateFrame() {
-		frame.removeAll();
-		addCompToFrame();
+	public JPanel createTicket() {
+		Font font = new Font("Lucida Console", Font.BOLD, 15);
+		JLabel title = new JLabel("Creer un fil de discussion");
+		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
+
+		JLabel selectG = new JLabel("Selection de groupe :");
+		selectG.setFont(font);
+
+		JLabel nameS = new JLabel("Nom du sujet :");
+		nameS.setFont(font);
+
+		JLabel msgL = new JLabel("Message");
+		msgL.setFont(font);
+
+		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
+		JTextField nameT = new JTextField(20);
+		JTextArea msgT = new JTextArea(5, 50);
+		JButton sendButton = new JButton("Nouveau Ticket");
+
+		sendButton.addActionListener(new EnvoiNewTicket(msgT, nameT, listGroupes, user));
+
+		return addCompWithLayout(title, selectG, nameS, msgL, listGroupes, nameT, msgT, sendButton);
+	}
+	
+	public void setMsgHistory(Ticket t) {
+		msgHistory.removeAll();
+		for (Message msg : t.getHistory()) {
+			msgHistory.add(msg.toJPanel());
+		}
+		updateMsgHisPanel();
+
 	}
 
-	public void updateTicketList() {
+	public void setTicketTree() {
 		root.removeAllChildren();
+
 		leafGroup = new DefaultMutableTreeNode[Group.values().length];
 		int indGroup = 0;
 
@@ -101,19 +156,32 @@ public class Interface {
 		}
 		if (model != null)
 			model.reload();
+
 	}
 
-	public JPanel zoneEcrire() {
-		JPanel ecrire = new JPanel();
-		JTextArea textArea = new JTextArea(3, 70);
-		JButton envoyer = new JButton("Envoyer");
+	public void updateMsgHisPanel() {
+		frame.getContentPane().removeAll();
+		onglet.removeAll();
+		onglet1.removeAll();
+		center.remove(msgHistory);
 
-		ecrire.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10),
-				BorderFactory.createMatteBorder(2, 0, 0, 0, Color.LIGHT_GRAY)));
-		ecrire.add(textArea);
-		ecrire.add(envoyer);
+		center.add(msgHistory, BorderLayout.CENTER);
+		onglet1.add(ticketTree, center);
+		onglet.add("Messages", onglet1);
+		onglet.add("Nouveau Ticket", onglet2);
+		frame.add(onglet);
+	}
 
-		return ecrire;
+	public void updateTreePanel() {
+		frame.getContentPane().removeAll();
+		onglet.removeAll();
+		onglet1.removeAll();
+		ticketTree = createTicketTree();
+
+		onglet1.add(ticketTree, center);
+		onglet.add("Messages", onglet1);
+		onglet.add("Nouveau Ticket", onglet2);
+		frame.add(onglet);
 	}
 
 	public String[] allGroupes() {
@@ -127,7 +195,7 @@ public class Interface {
 		return lGroupes;
 	}
 
-	public JPanel addCompToLayout(Font font, JLabel titre, JLabel selectG, JLabel nomSujet, JLabel message,
+	public JPanel addCompWithLayout(JLabel titre, JLabel selectG, JLabel nomSujet, JLabel message,
 			JComboBox<String> listGroupes, JTextField nomS, JTextArea msg, JButton envoyer) {
 		JPanel newPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -167,55 +235,13 @@ public class Interface {
 		return newPanel;
 	}
 
-	public JPanel createTicket() {
-		Font font = new Font("Lucida Console", Font.BOLD, 15);
-		JLabel titre = new JLabel("Creer un fil de discussion");
-		titre.setFont(new Font("Lucida Console", Font.BOLD, 20));
-
-		JLabel selectG = new JLabel("Selection de groupe :");
-		selectG.setFont(font);
-
-		JLabel nomSujet = new JLabel("Nom du sujet :");
-		nomSujet.setFont(font);
-
-		JLabel message = new JLabel("Message");
-		message.setFont(font);
-
-		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
-		JTextField nomS = new JTextField(20);
-		JTextArea msg = new JTextArea(5, 50);
-		JButton envoyer = new JButton("Nouveau Ticket");
-
-		envoyer.addActionListener(new EnvoiNewTicket(msg, nomS, listGroupes, user));
-
-		return addCompToLayout(font, titre, selectG, nomSujet, message, listGroupes, nomS, msg, envoyer);
-	}
-
-	public JPanel histMsg() {
-
-		JLabel titre = new JLabel("Sélectionner un ticket !");
-		JPanel histMsg = new JPanel();
-		histMsg.add(titre);
-
-		return histMsg;
-	}
+	
 
 	public void addCompToFrame() {
-		onglet = new JTabbedPane();
-
-		listTicket = affichListTickets();
-		ecrire = zoneEcrire();
-		histMsg = histMsg();
-		center = new JPanel(new BorderLayout());
-
-		center.add(histMsg, BorderLayout.PAGE_START);
-		center.add(ecrire, BorderLayout.CENTER);
-
-		onglet1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, listTicket, center);
 		onglet1.setDividerLocation(150);
 
 		onglet.add("Messages", onglet1);
-		onglet.add("Nouveau Ticket", createTicket());
+		onglet.add("Nouveau Ticket", onglet2);
 
 		frame.add(onglet);
 	}
@@ -223,9 +249,7 @@ public class Interface {
 	public Interface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
-		msgHistory.setLayout(new BoxLayout(msgHistory, BoxLayout.Y_AXIS));
 
-		frame = new JFrame("Facebook (même si mnt c'est meta mdr");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCompToFrame();
 
