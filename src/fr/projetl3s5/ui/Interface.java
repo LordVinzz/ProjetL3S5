@@ -38,7 +38,7 @@ public class Interface {
 	JPanel writeZone = createWriteZone();
 	JPanel center = createCenter();
 
-	JPanel ticketTree = createTicketTree();
+	JPanel ticketTree;
 
 	JSplitPane onglet1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ticketTree, center);
 	JPanel onglet2 = createTicket();
@@ -54,6 +54,8 @@ public class Interface {
 	}
 
 	public JPanel createWriteZone() {
+		
+		writeZone = new JPanel();
 		
 		JTextArea textZone = new JTextArea(5, 20);
 		JButton sendButton = new JButton("Envoyer");
@@ -144,7 +146,7 @@ public class Interface {
 		leafGroup = new DefaultMutableTreeNode[Group.values().length];
 		int indGroup = 0;
 
-		for (String group : user.getGroupe()) {
+		for (String group : user.getGroups()) {
 
 			leafGroup[indGroup] = new DefaultMutableTreeNode(group);
 
@@ -178,7 +180,9 @@ public class Interface {
 		onglet1.removeAll();
 		ticketTree = createTicketTree();
 
-		onglet1.add(ticketTree, center);
+		onglet1.add(ticketTree, BorderLayout.PAGE_START);
+		onglet1.add(center, BorderLayout.CENTER);
+		
 		onglet.add("Messages", onglet1);
 		onglet.add("Nouveau Ticket", onglet2);
 		frame.add(onglet);
@@ -248,8 +252,10 @@ public class Interface {
 
 	public Interface(User user) {
 		this.user = user;
-		this.user.setInterface(this);
-
+//		this.user.setInterface(this);
+		
+		ticketTree = createTicketTree();
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCompToFrame();
 

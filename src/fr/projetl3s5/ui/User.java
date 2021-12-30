@@ -20,9 +20,9 @@ public class User implements Context{
 	private int nbTotalTicket = 0;
 	private int groupsMask;
 
-	private List<String> groupe = new ArrayList<>();
+	private List<String> group = new ArrayList<>();
 	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
-	private Interface interfacz;
+	private Interface3 interfacz;
 
 	public User(String id, String name, String fName) {
 		this.id = id;
@@ -38,7 +38,7 @@ public class User implements Context{
 		this.groupsMask = group;
 
 		for (Group g : Group.getGroupsByID(group)) {
-			this.groupe.add(g.toString());
+			this.group.add(g.toString());
 		}
 
 		for (Group g : Group.values()) {
@@ -72,8 +72,8 @@ public class User implements Context{
 		return name;
 	}
 
-	public List<String> getGroupe() {
-		return groupe;
+	public List<String> getGroups() {
+		return group;
 	}
 	
 	public Client getClient() {
@@ -94,7 +94,7 @@ public class User implements Context{
 		if (obj instanceof User) {
 			User user = (User) obj;
 			return id.equals(user.getId()) && fName.equals(user.getPrenom()) && name.equals(user.getNom())
-					&& groupe.equals(user.getGroupe());
+					&& group.equals(user.getGroups());
 		}
 
 		return false;
@@ -102,18 +102,18 @@ public class User implements Context{
 
 	public synchronized void addToTicketList(Ticket t) {
 		String g = t.getGroup().toString();
-		if (groupe.contains(g)) {
+		if (group.contains(g)) {
 			listTickets.get(g).add(t);
 			nbTotalTicket++;
 		}
 	}
 
-	public void setInterface(Interface interface1) {
+	public void setInterface(Interface3 interface1) {
 		this.interfacz = interface1;
 	}
 
 	public void updateInterface() {
-		this.interfacz.updateTreePanel();
+		interfacz.setTicketTree();
 	}
 
 }
