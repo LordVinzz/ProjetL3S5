@@ -1,11 +1,12 @@
 package fr.projetl3s5.main;
 
-import fr.projetl3s5.ui.Interface2;
+import fr.projetl3s5.ui.Interface3;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Interface2 i2 = new Interface2();
+//		Interface2 i2 = new Interface2();
+		Interface3 i3 = new Interface3();
 //		Thread t = new Thread() {
 //			@Override
 //			public void run() {
