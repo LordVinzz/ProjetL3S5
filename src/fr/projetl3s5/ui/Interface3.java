@@ -3,14 +3,10 @@ package fr.projetl3s5.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,20 +24,22 @@ import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 import fr.projetl3s5.groups.Group;
 
 public class Interface3 {
 
 	private JFrame jFrame;
-	private JPanel masterPane;
-	private SpringLayout layout;
-	private JScrollPane scrollPane;
-
+	private JPanel masterPane = new JPanel();
+	private SpringLayout layout = new SpringLayout();
+	private JScrollPane scrollPane = new JScrollPane(masterPane);
 	private DefaultMutableTreeNode root, leafGroup[];
 	private DefaultTreeModel model;
-
+	
+	private JTextArea writingZone = new JTextArea(3, 50);
+	private JTextField nameT = new JTextField(25);
+	private JTextArea msgT = new JTextArea(5, 50);
+	
 	private User user;
 
 	public Interface3(User user) {
@@ -49,7 +47,8 @@ public class Interface3 {
 		this.user.setInterface(this);
 		jFrame = new JFrame();
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JTabbedPane ticketsTab = new JTabbedPane(JTabbedPane.TOP);
+
+		JTabbedPane ticketsTab = new JTabbedPane();
 		jFrame.getContentPane().add(ticketsTab, BorderLayout.CENTER);
 
 		addComponentsToTabbedPane(ticketsTab);
@@ -99,8 +98,13 @@ public class Interface3 {
 
 	public void addMessageToTicket(Message msg) {
 		JPanel childPane = new JPanel();
+		JPanel lastPane = getLastMasterPaneComp();		
+		JLabel emailLabel = new JLabel("De : "+msg.getCreator().getId());
+		JLabel dateLabel = new JLabel(String.format("A : %d", msg.getUploadDate()));
+		JLabel textArea = new JLabel(msg.getContent());
 
-		JPanel lastPane = getLastMasterPaneComponent();
+		GridBagConstraints constraints = new GridBagConstraints();
+		
 		if (lastPane != null) {
 			layout.putConstraint(SpringLayout.NORTH, childPane, 6, SpringLayout.SOUTH, lastPane);
 		}
@@ -109,73 +113,64 @@ public class Interface3 {
 		layout.putConstraint(SpringLayout.WEST, childPane, 0, SpringLayout.WEST, masterPane);
 
 		childPane.setBorder(BorderFactory.createLineBorder(Color.black));
+		childPane.setLayout(setNewGridBagLayout());
 
+		masterPane.add(childPane);
+
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(0, 0, 5, 5);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		childPane.add(emailLabel, constraints);
+
+		constraints.anchor = GridBagConstraints.EAST;
+		constraints.gridx = 1;
+		childPane.add(dateLabel, constraints);
+
+		constraints.gridwidth = 2;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		childPane.add(textArea, constraints);
+
+		setColorMsg(msg.getReadBy(), childPane, msg);
+
+		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComp());
+		
+		writingZone.setText("");
+	}
+	
+	public GridBagLayout setNewGridBagLayout() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 570, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 75, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-		childPane.setLayout(gridBagLayout);
-
-		masterPane.add(childPane);
-
-		JLabel emailLabel = new JLabel(msg.getCreator().getId());
-		GridBagConstraints gridBagConstraints_1 = new GridBagConstraints();
-		gridBagConstraints_1.anchor = GridBagConstraints.WEST;
-		gridBagConstraints_1.insets = new Insets(0, 0, 5, 5);
-		gridBagConstraints_1.gridx = 0;
-		gridBagConstraints_1.gridy = 0;
-		childPane.add(emailLabel, gridBagConstraints_1);
-
-		JLabel dateLabel = new JLabel(String.format("%d", msg.getUploadDate()));
-		GridBagConstraints gridBagConstraints_2 = new GridBagConstraints();
-		gridBagConstraints_2.anchor = GridBagConstraints.EAST;
-		gridBagConstraints_2.insets = new Insets(0, 0, 5, 0);
-		gridBagConstraints_2.gridx = 1;
-		gridBagConstraints_2.gridy = 0;
-		childPane.add(dateLabel, gridBagConstraints_2);
-
-		JTextArea textArea = new JTextArea(msg.getContent());
-		textArea.setBackground(UIManager.getColor("Panel.background"));
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setEditable(false);
-
-		GridBagConstraints gridBagConstraints_3 = new GridBagConstraints();
-		gridBagConstraints_3.gridwidth = 2;
-		gridBagConstraints_3.fill = GridBagConstraints.BOTH;
-		gridBagConstraints_3.gridx = 0;
-		gridBagConstraints_3.gridy = 1;
-		childPane.add(textArea, gridBagConstraints_3);
-
-		int readBy = msg.getReadBy();
-
+		return gridBagLayout;
+	}
+	
+	public void setColorMsg(int readBy, JPanel childPane, Message msg) {
+		
 		if (readBy == 0) {
-			childPane.setBackground(Color.RED);
-			textArea.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			childPane.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
 		}
 
 		else if (readBy < msg.getNbTotalMembers()) {
-			childPane.setBackground(Color.ORANGE);
-			textArea.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
+			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
 		}
 
 		else if (readBy == msg.getNbTotalMembers()) {
-			childPane.setBackground(Color.GREEN);
-			textArea.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
 		}
 
 		else {
-			childPane.setBackground(Color.GRAY);
-			textArea.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		}
-
-		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComponent());
 	}
 
 	// ---------------------------------------------------------------------------
 
-	public JPanel getLastMasterPaneComponent() {
+	public JPanel getLastMasterPaneComp() {
 		boolean hasChilds = masterPane.getComponents().length > 0;
 		if (hasChilds) {
 			return (JPanel) masterPane.getComponent(masterPane.getComponents().length - 1);
@@ -188,133 +183,98 @@ public class Interface3 {
 	}
 
 	private void addComponentsToTabbedPane(JTabbedPane ticketsTab) {
-		JSplitPane splitPane_0 = splitPane0Method(ticketsTab);
-
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		JButton btnNewButton = new JButton("Envoyer");
+		JPanel writePanel = new JPanel();
+		JPanel msgZone = new JPanel(new BorderLayout());
+		ticketsTab.addTab("Liste de Tickets", splitPane);
 		root = new DefaultMutableTreeNode("List de Tickets");
-
 		JTree tree = createTicketTree();
 		model = (DefaultTreeModel) tree.getModel();
 
-		splitPane_0.setLeftComponent(tree);
+		splitPane.setOneTouchExpandable(false);
+		writePanel.add(writingZone);
+		writePanel.add(btnNewButton);
+		splitPane.setLeftComponent(tree);
+		splitPane.setRightComponent(msgZone);
 
-		JSplitPane splitPane_1 = splitPane1Method(splitPane_0);
+		btnNewButton.addActionListener(new EnvoiNewMsg(writingZone , this, user));
 
-		JSplitPane splitPane_2 = splitPane2Method(splitPane_1);
-
-		JTextArea writingZone = new JTextArea();
-		splitPane_2.setLeftComponent(writingZone);
-
-		JButton btnNewButton = new JButton("Envoyer");
-
-//		btnNewButton.addActionListener(); TODO
-
-		splitPane_2.setRightComponent(btnNewButton);
-
-		createMasterPane();
-
-		splitPane_1.setLeftComponent(scrollPane);
+		masterPane.setLayout(layout);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		msgZone.add(scrollPane, BorderLayout.CENTER);
+		msgZone.add(writePanel, BorderLayout.PAGE_END);
 
 		createSecondTab(ticketsTab);
 	}
 
-	private void createMasterPane() {
-		masterPane = new JPanel();
-		layout = new SpringLayout();
-		masterPane.setLayout(layout);
-
-		scrollPane = new JScrollPane(masterPane);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	}
-
 	private void createSecondTab(JTabbedPane ticketsTab) {
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.rowHeights = new int[] { 50, 0, 0, 0, 145, 0, 50 };
-		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 };
-		gbl_panel.columnWidths = new int[] { 0, 0, 0, 0, 0, 100, 0, 0, 265, 155 };
-		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
-		JPanel panel = new JPanel(gbl_panel);
-		ticketsTab.addTab("Créer Ticket", null, panel, null);
+		JPanel selectGr = new JPanel();
+		JPanel selectS = new JPanel();
+		JLabel title = new JLabel("Creer un fil de discussion");
+		JPanel msg = new JPanel();
+		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
 
-		JLabel lblNewLabel = new JLabel("Objet du Ticket : ");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 6;
-		gbc_lblNewLabel.gridy = 1;
-		panel.add(lblNewLabel, gbc_lblNewLabel);
+		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
 
-		JTextField createTicketTextField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.gridx = 8;
-		gbc_textField.gridy = 1;
-		panel.add(createTicketTextField, gbc_textField);
-		createTicketTextField.setColumns(10);
+		JButton sendButton = new JButton("Nouveau Ticket");
+		sendButton.addActionListener(new EnvoiNewTicket(msgT, nameT, listGroupes, this));
 
-		JLabel lblNewLabel_1 = new JLabel("Groupe : ");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.gridx = 6;
-		gbc_lblNewLabel_1.gridy = 2;
-		panel.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		selectGr.add(new JLabel("Selection de groupe :"));
+		selectGr.add(listGroupes);
 
-		JComboBox<Group> comboBox = new JComboBox<>();
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox.gridx = 8;
-		gbc_comboBox.gridy = 2;
-		panel.add(comboBox, gbc_comboBox);
+		selectS.add(new JLabel("Nom du sujet :"));
+		selectS.add(nameT);
 
-		JLabel lblNewLabel_2 = new JLabel("Message : ");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.NORTH;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 6;
-		gbc_lblNewLabel_2.gridy = 4;
-		panel.add(lblNewLabel_2, gbc_lblNewLabel_2);
+		msg.add(new JLabel("Message :"));
+		msg.add(msgT);
 
-		JTextArea newTicketWritingZone = new JTextArea();
-		GridBagConstraints gbc_textArea_1 = new GridBagConstraints();
-		gbc_textArea_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textArea_1.fill = GridBagConstraints.BOTH;
-		gbc_textArea_1.gridx = 8;
-		gbc_textArea_1.gridy = 4;
-		panel.add(newTicketWritingZone, gbc_textArea_1);
-
-		JButton btnNewButton_1 = new JButton("Créer un Ticket");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 8;
-		gbc_btnNewButton_1.gridy = 5;
-		panel.add(btnNewButton_1, gbc_btnNewButton_1);
+		ticketsTab.add("Nouveau Ticket", addCompWithLayout(title, selectGr, selectS, msg, sendButton));
 	}
 
-	private JSplitPane splitPane2Method(JSplitPane splitPane_1) {
-		JSplitPane splitPane_2 = new JSplitPane();
-		splitPane_2.setEnabled(false);
-		splitPane_2.setResizeWeight(0.95);
-		splitPane_1.setRightComponent(splitPane_2);
-		return splitPane_2;
+	public JPanel addCompWithLayout(JLabel title, JPanel selectGr, JPanel selectS, JPanel msg, JButton sendButton) {
+		JPanel newPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(10, 10, 10, 10);
+
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		newPanel.add(selectGr, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		newPanel.add(selectS, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		newPanel.add(msg, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.CENTER;
+		newPanel.add(sendButton, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		newPanel.add(title, constraints);
+		return newPanel;
 	}
 
-	private JSplitPane splitPane1Method(JSplitPane splitPane_0) {
-		JSplitPane splitPane_1 = new JSplitPane();
-		splitPane_1.setResizeWeight(0.75);
-		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		splitPane_1.setOneTouchExpandable(true);
-		splitPane_0.setRightComponent(splitPane_1);
-		return splitPane_1;
+	public String[] allGroupes() {
+		Group[] listeGroupes = Group.values();
+		String[] lGroupes = new String[listeGroupes.length];
+		int ind = 0;
+		for (Group g : listeGroupes) {
+			lGroupes[ind] = g.toString();
+			ind++;
+		}
+		return lGroupes;
 	}
-
-	private JSplitPane splitPane0Method(JTabbedPane ticketsTab) {
-		JSplitPane splitPane_0 = new JSplitPane();
-		splitPane_0.setResizeWeight(0.1);
-		splitPane_0.setOneTouchExpandable(true);
-		ticketsTab.addTab("Liste de Tickets", null, splitPane_0, null);
-		return splitPane_0;
+	
+	public User getUser() {
+		return user;
 	}
-
 }

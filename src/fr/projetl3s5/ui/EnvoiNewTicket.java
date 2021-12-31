@@ -17,14 +17,14 @@ public class EnvoiNewTicket implements ActionListener {
 	JTextArea msg;
 	JTextField nomS;
 	JComboBox<String> listG;
-	User user;
+	Interface3 i;
 	
 	
-	public EnvoiNewTicket(JTextArea msg, JTextField nomS, JComboBox<String> listG, User user) {
+	public EnvoiNewTicket(JTextArea msg, JTextField nomS, JComboBox<String> listG, Interface3 i) {
 		this.msg = msg;
 		this.nomS = nomS;
 		this.listG=listG;
-		this.user = user;
+		this.i=i;
 	}
 
 	@Override
@@ -35,6 +35,8 @@ public class EnvoiNewTicket implements ActionListener {
 		
 		if(possible()) {
 			JOptionPane.showMessageDialog(null, "Ticket crée avec succès !", "Nouveau Ticket", JOptionPane.INFORMATION_MESSAGE);
+			//TODO
+			//i.getUser().addToTicketList(new Ticket(sujet, comboBox.getSelectedItem);
 		}
 		else {
 			String msg = "Erreur dans la création du ticket! Vérifiez les conditions suivantes ;\n\n"
