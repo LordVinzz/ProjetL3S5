@@ -3,6 +3,7 @@ package fr.projetl3s5.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,7 +22,8 @@ public class Login implements Context {
 
 	private Client client;
 	private JSONObject lastCredentials = null;
-
+	private JFrame frame;
+	
 	public Login(Client client) {
 		this.client = client;
 	}
@@ -30,11 +32,17 @@ public class Login implements Context {
 		if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
 			System.exit(0);
 		}
-		
+
 	}
 
 	public void checkCredentials(JSONObject jsonObject) {
 		lastCredentials = jsonObject;
+		if (lastCredentials.getString("Status").equals("valid")) {
+			User user = new User(lastCredentials.getString("Id"), lastCredentials.getString("Name"),
+					lastCredentials.getString("FName"), lastCredentials.getInt("Group"), client);
+			Interface i2 = new Interface(user);
+			frame.dispose();
+		}
 	}
 
 	public JSONObject getLastCredentials() {
@@ -42,16 +50,18 @@ public class Login implements Context {
 	}
 
 	private void createWindow() {
-		JFrame frame = new JFrame("Connexion au serveur");
+		frame = new JFrame("Connexion au serveur");
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel labelUser = new JLabel("Identifiant: ");
 		JLabel labelPass = new JLabel("Mot de Passe: ");
 		JTextField textUser = new JTextField(20);
+		textUser.setText("root@univ-tlse3.fr");
 		JPasswordField fieldPass = new JPasswordField(20);
+		fieldPass.setText("root");
 		JButton valider = new JButton("Valider");
 		valider.addActionListener(new IDValidator(fieldPass, textUser, client, this));
-		
+
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
@@ -59,9 +69,9 @@ public class Login implements Context {
 		setValues(labelUser, labelPass, textUser, fieldPass, valider, newPanel, constraints);
 
 		frame.add(newPanel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 
 	private void setValues(JLabel labelUser, JLabel labelPass, JTextField textUser, JPasswordField fieldPass,

@@ -31,7 +31,8 @@ public class Client extends Thread implements Context {
 		try {
 			while(this.socket != null && (o = in.readObject()) != null) {
 				if(o instanceof Packet)packets.add((Packet)o);
-				while(contexts.size() != 0) {
+				System.out.println(packets);
+				while(contexts.size() == packets.size() && contexts.size() != 0) {
 					pollPacket().execute(pollContext());
 				}
 			}

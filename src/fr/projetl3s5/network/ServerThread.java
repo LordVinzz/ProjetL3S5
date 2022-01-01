@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.projetl3s5.db.DatabaseCommunicator;
+import fr.projetl3s5.ui.User;
 
 public class ServerThread extends Thread implements Context{
 	
@@ -16,6 +17,7 @@ public class ServerThread extends Thread implements Context{
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
 	private List<Packet> packets = new ArrayList<Packet>();
+	private User user;
 	
 	public ServerThread(Socket s) {
 		clientSocket = s;
@@ -65,4 +67,11 @@ public class ServerThread extends Thread implements Context{
 		return clientSocket;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public User getUser() {
+		return user;
+	}
 }

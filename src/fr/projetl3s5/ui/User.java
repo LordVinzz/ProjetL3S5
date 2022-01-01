@@ -22,7 +22,7 @@ public class User implements Context{
 
 	private List<String> group = new ArrayList<>();
 	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
-	private Interface3 interfacz;
+	private Interface interfacz;
 
 	public User(String id, String name, String fName) {
 		this.id = id;
@@ -108,7 +108,7 @@ public class User implements Context{
 		}
 	}
 
-	public void setInterface(Interface3 interface1) {
+	public void setInterface(Interface interface1) {
 		this.interfacz = interface1;
 	}
 

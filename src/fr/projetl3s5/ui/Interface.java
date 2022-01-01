@@ -2,13 +2,11 @@ package fr.projetl3s5.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,130 +14,66 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SpringLayout;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 import fr.projetl3s5.groups.Group;
 
 public class Interface {
 
-	User user;
-	JFrame frame = new JFrame("Facebook (même si mnt c'est meta mdr");;
-	DefaultMutableTreeNode root, leafGroup[];
-	DefaultTreeModel model;
+	private JFrame jFrame;
+	private JPanel masterPane = new JPanel();
+	private SpringLayout layout = new SpringLayout();
+	private JScrollPane scrollPane = new JScrollPane(masterPane);
+	private DefaultMutableTreeNode root, leafGroup[];
+	private DefaultTreeModel model;
+	
+	private JTextArea writingZone = new JTextArea(3, 50);
+	private JTextField nameT = new JTextField(25);
+	private JTextArea msgT = new JTextArea(5, 50);
+	
+	private Ticket currentTicket;
+	
+	private User user;
 
-	JPanel msgHistory = new JPanel();
-	JPanel writeZone = createWriteZone();
-	JPanel center = createCenter();
+	public Interface(User user) {
+		this.user = user;
+		this.user.setInterface(this);
+		jFrame = new JFrame();
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	JPanel ticketTree;
+		JTabbedPane ticketsTab = new JTabbedPane();
+		jFrame.getContentPane().add(ticketsTab, BorderLayout.CENTER);
 
-	JSplitPane onglet1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ticketTree, center);
-	JPanel onglet2 = createTicket();
+		addComponentsToTabbedPane(ticketsTab);
 
-	JTabbedPane onglet = new JTabbedPane();
-	Ticket ticketCourant;
-
-	public JPanel createCenter() {
-		center = new JPanel(new BorderLayout());
-		center.add(writeZone, BorderLayout.SOUTH);
-		center.add(msgHistory, BorderLayout.CENTER);
-		return center;
+		jFrame.setSize(new Dimension(800, 500));
+		jFrame.setVisible(true);
 	}
 
-	public JPanel createWriteZone() {
-		
-		writeZone = new JPanel();
-		
-		JTextArea textZone = new JTextArea(5, 20);
-		JButton sendButton = new JButton("Envoyer");
-		sendButton.addActionListener(new EnvoiNewMsg(textZone, ticketCourant, user));
+	// ---------------------------------------------------------------------------
 
-		writeZone.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10),
-				BorderFactory.createMatteBorder(2, 0, 0, 0, Color.LIGHT_GRAY)));
-		writeZone.add(textZone);
-		writeZone.add(sendButton);
-
-		return writeZone;
-	}
-
-	public JPanel createHistMsg() {
-		msgHistory.add(new JLabel("Sélectionner un ticket !"));
-		return msgHistory;
-	}
-
-	public JPanel createTicketTree() {
-		JPanel panel = new JPanel();
-		root = new DefaultMutableTreeNode("Liste Tickets");
-
-		setTicketTree();
-
-		JTree arbre = new JTree(root);
-		model = (DefaultTreeModel) arbre.getModel();
-		panel.add(arbre);
-
-		MouseListener ml = new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				int selRow = arbre.getRowForLocation(e.getX(), e.getY());
-				TreePath selPath = arbre.getPathForLocation(e.getX(), e.getY());
-				if (selRow != -1) {
-					if (e.getClickCount() == 1) {
-						if (((DefaultMutableTreeNode) selPath.getLastPathComponent())
-								.getUserObject() instanceof Ticket) {
-							Ticket ticket = (Ticket) ((DefaultMutableTreeNode) selPath.getLastPathComponent())
-									.getUserObject();
-							ticketCourant=ticket;
-							setMsgHistory(ticket);
-						}
-					} else if (e.getClickCount() == 2) {
-					}
-				}
-			}
-		};
-		arbre.addMouseListener(ml);
-
-		return panel;
-	}
-
-	public JPanel createTicket() {
-		Font font = new Font("Lucida Console", Font.BOLD, 15);
-		JLabel title = new JLabel("Creer un fil de discussion");
-		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
-
-		JLabel selectG = new JLabel("Selection de groupe :");
-		selectG.setFont(font);
-
-		JLabel nameS = new JLabel("Nom du sujet :");
-		nameS.setFont(font);
-
-		JLabel msgL = new JLabel("Message");
-		msgL.setFont(font);
-
-		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
-		JTextField nameT = new JTextField(20);
-		JTextArea msgT = new JTextArea(5, 50);
-		JButton sendButton = new JButton("Nouveau Ticket");
-
-		sendButton.addActionListener(new EnvoiNewTicket(msgT, nameT, listGroupes, user));
-
-		return addCompWithLayout(title, selectG, nameS, msgL, listGroupes, nameT, msgT, sendButton);
+	public void refreshScrollPane() {
+		scrollPane.revalidate();
+		scrollPane.repaint();
 	}
 	
-	public void setMsgHistory(Ticket t) {
-		msgHistory.removeAll();
-		for (Message msg : t.getHistory()) {
-			msgHistory.add(msg.toJPanel());
-		}
-		updateMsgHisPanel();
-
+	public Ticket getCurrentTicket() {
+		return currentTicket;
 	}
-
+	
+	public void setCurrentTicket(Ticket currentTicket) {
+		this.currentTicket = currentTicket;
+	}
+	
 	public void setTicketTree() {
 		root.removeAllChildren();
 
@@ -158,34 +92,185 @@ public class Interface {
 		}
 		if (model != null)
 			model.reload();
-
 	}
 
-	public void updateMsgHisPanel() {
-		frame.getContentPane().removeAll();
-		onglet.removeAll();
-		onglet1.removeAll();
-		center.remove(msgHistory);
+	public JTree createTicketTree() {
+		root = new DefaultMutableTreeNode("Liste Tickets");
 
-		center.add(msgHistory, BorderLayout.CENTER);
-		onglet1.add(ticketTree, center);
-		onglet.add("Messages", onglet1);
-		onglet.add("Nouveau Ticket", onglet2);
-		frame.add(onglet);
+		setTicketTree();
+
+		JTree tree = new JTree(root);
+		model = (DefaultTreeModel) tree.getModel();
+
+		tree.addMouseListener(new TreeMouseListener(tree, this));
+		return tree;
 	}
 
-	public void updateTreePanel() {
-		frame.getContentPane().removeAll();
-		onglet.removeAll();
-		onglet1.removeAll();
-		ticketTree = createTicketTree();
+	public void addMessageToTicket(Message msg) {
+		JPanel childPane = new JPanel();
+		JPanel lastPane = getLastMasterPaneComp();		
+		JLabel emailLabel = new JLabel("De : "+msg.getCreator().getId());
+		JLabel dateLabel = new JLabel(String.format("A : %d", msg.getUploadDate()));
+		JLabel textArea = new JLabel(msg.getContent());
 
-		onglet1.add(ticketTree, BorderLayout.PAGE_START);
-		onglet1.add(center, BorderLayout.CENTER);
+		GridBagConstraints constraints = new GridBagConstraints();
 		
-		onglet.add("Messages", onglet1);
-		onglet.add("Nouveau Ticket", onglet2);
-		frame.add(onglet);
+		if (lastPane != null) {
+			layout.putConstraint(SpringLayout.NORTH, childPane, 6, SpringLayout.SOUTH, lastPane);
+		}
+
+		layout.putConstraint(SpringLayout.EAST, childPane, 0, SpringLayout.EAST, masterPane);
+		layout.putConstraint(SpringLayout.WEST, childPane, 0, SpringLayout.WEST, masterPane);
+
+		childPane.setBorder(BorderFactory.createLineBorder(Color.black));
+		childPane.setLayout(setNewGridBagLayout());
+
+		masterPane.add(childPane);
+
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(0, 0, 5, 5);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		childPane.add(emailLabel, constraints);
+
+		constraints.anchor = GridBagConstraints.EAST;
+		constraints.gridx = 1;
+		childPane.add(dateLabel, constraints);
+
+		constraints.gridwidth = 2;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		childPane.add(textArea, constraints);
+
+		setColorMsg(msg.getReadBy(), childPane, msg);
+
+		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComp());
+		
+		writingZone.setText("");
+	}
+	
+	public GridBagLayout setNewGridBagLayout() {
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0, 570, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 75, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		return gridBagLayout;
+	}
+	
+	public void setColorMsg(int readBy, JPanel childPane, Message msg) {
+		
+		if (readBy == 0) {
+			childPane.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+		}
+
+		else if (readBy < msg.getNbTotalMembers()) {
+			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
+		}
+
+		else if (readBy == msg.getNbTotalMembers()) {
+			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+		}
+
+		else {
+			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+
+	public JPanel getLastMasterPaneComp() {
+		boolean hasChilds = masterPane.getComponents().length > 0;
+		if (hasChilds) {
+			return (JPanel) masterPane.getComponent(masterPane.getComponents().length - 1);
+		}
+		return null;
+	}
+
+	public void clearMessagesFromTicket() {
+		masterPane.removeAll();
+	}
+
+	private void addComponentsToTabbedPane(JTabbedPane ticketsTab) {
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		JButton btnNewButton = new JButton("Envoyer");
+		JPanel writePanel = new JPanel();
+		JPanel msgZone = new JPanel(new BorderLayout());
+		ticketsTab.addTab("Liste de Tickets", splitPane);
+		root = new DefaultMutableTreeNode("List de Tickets");
+		JTree tree = createTicketTree();
+		model = (DefaultTreeModel) tree.getModel();
+
+		splitPane.setOneTouchExpandable(false);
+		writePanel.add(writingZone);
+		writePanel.add(btnNewButton);
+		splitPane.setLeftComponent(tree);
+		splitPane.setRightComponent(msgZone);
+
+		btnNewButton.addActionListener(new SendMessageListener(writingZone , this, user));
+
+		masterPane.setLayout(layout);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		msgZone.add(scrollPane, BorderLayout.CENTER);
+		msgZone.add(writePanel, BorderLayout.PAGE_END);
+
+		createSecondTab(ticketsTab);
+	}
+
+	private void createSecondTab(JTabbedPane ticketsTab) {
+		JPanel selectGr = new JPanel();
+		JPanel selectS = new JPanel();
+		JLabel title = new JLabel("Creer un fil de discussion");
+		JPanel msg = new JPanel();
+		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
+
+		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
+
+		JButton sendButton = new JButton("Nouveau Ticket");
+		sendButton.addActionListener(new SendNewTicket(msgT, nameT, listGroupes, this));
+
+		selectGr.add(new JLabel("Selection de groupe :"));
+		selectGr.add(listGroupes);
+
+		selectS.add(new JLabel("Nom du sujet :"));
+		selectS.add(nameT);
+
+		msg.add(new JLabel("Message :"));
+		msg.add(msgT);
+
+		ticketsTab.add("Nouveau Ticket", addCompWithLayout(title, selectGr, selectS, msg, sendButton));
+	}
+
+	public JPanel addCompWithLayout(JLabel title, JPanel selectGr, JPanel selectS, JPanel msg, JButton sendButton) {
+		JPanel newPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.WEST;
+		constraints.insets = new Insets(10, 10, 10, 10);
+
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		newPanel.add(selectGr, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		newPanel.add(selectS, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		newPanel.add(msg, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.CENTER;
+		newPanel.add(sendButton, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		newPanel.add(title, constraints);
+		return newPanel;
 	}
 
 	public String[] allGroupes() {
@@ -198,70 +283,8 @@ public class Interface {
 		}
 		return lGroupes;
 	}
-
-	public JPanel addCompWithLayout(JLabel titre, JLabel selectG, JLabel nomSujet, JLabel message,
-			JComboBox<String> listGroupes, JTextField nomS, JTextArea msg, JButton envoyer) {
-		JPanel newPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.anchor = GridBagConstraints.WEST;
-		constraints.insets = new Insets(50, 10, 10, 10);
-
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		newPanel.add(selectG, constraints);
-
-		constraints.gridx = 1;
-		newPanel.add(listGroupes, constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 2;
-		newPanel.add(nomSujet, constraints);
-
-		constraints.gridx = 1;
-		newPanel.add(nomS, constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 3;
-		newPanel.add(message, constraints);
-
-		constraints.gridx = 1;
-		newPanel.add(msg, constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 4;
-
-		constraints.gridwidth = 2;
-		constraints.anchor = GridBagConstraints.CENTER;
-		newPanel.add(envoyer, constraints);
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		newPanel.add(titre, constraints);
-		return newPanel;
-	}
-
 	
-
-	public void addCompToFrame() {
-		onglet1.setDividerLocation(150);
-
-		onglet.add("Messages", onglet1);
-		onglet.add("Nouveau Ticket", onglet2);
-
-		frame.add(onglet);
-	}
-
-	public Interface(User user) {
-		this.user = user;
-//		this.user.setInterface(this);
-		
-		ticketTree = createTicketTree();
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addCompToFrame();
-
-		frame.pack();
-		frame.setLocation(400, 150);
-		frame.setSize(900, 600);
-		frame.setVisible(true);
+	public User getUser() {
+		return user;
 	}
 }

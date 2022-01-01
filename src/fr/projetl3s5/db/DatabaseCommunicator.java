@@ -48,7 +48,10 @@ public class DatabaseCommunicator {
 			jObject.put("Status", "valid");
 			jObject.put("Name", resultSet.getString("name"));
 			jObject.put("FName", resultSet.getString("fname"));
+			jObject.put("Group", resultSet.getInt("_group"));
+			jObject.put("Id", resultSet.getString("username"));
 		} catch (SQLException e) {
+			e.printStackTrace();
 			jObject.put("Status", "invalid");
 			jObject.put("ConnectionToken", "null");
 		}
@@ -65,7 +68,7 @@ public class DatabaseCommunicator {
 					
 					statement = connection.createStatement();
 					resultSet = statement.executeQuery(String.format(
-							"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable.group = '%d'", id, mask));
+							"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable._group = '%d'", id, mask));
 					
 					while(resultSet.next()) {
 						File file = new File( String.format("serverhistory/%s.json", resultSet.getString("filename")) );
@@ -83,4 +86,21 @@ public class DatabaseCommunicator {
 		return null;
 	}
 	
+	public static synchronized int getGroupLength(int group) {
+		
+		try {
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("SELECT userstable._group, count(userstable._group) FROM userstable GROUP by _group");
+			
+			while(resultSet.next()) {
+				if(group == resultSet.getInt("_group")) {
+					return resultSet.getInt(2);
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }

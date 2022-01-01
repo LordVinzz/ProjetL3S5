@@ -16,6 +16,7 @@ public class Ticket implements Comparable<Ticket>{
 	private Group group;
 	private NavigableSet<Message> history = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
 	private User creator;
+	private String code;
 	
 	public Ticket(String titre, Group groupe, User createur, Message... messages) {
 		this.title=titre;
@@ -31,6 +32,7 @@ public class Ticket implements Comparable<Ticket>{
 		this.title = jObject.getString("Title");
 		this.totalMember = jObject.getInt("TotalMembers");
 		this.group = Group.getGroupByID(jObject.getInt("Group"));
+		this.code = jObject.getString("Code");
 		
 		JSONArray jArray = jObject.getJSONArray("Messages");
 		for(int i = 0; i < jArray.length(); i++) {
@@ -89,6 +91,12 @@ public class Ticket implements Comparable<Ticket>{
 	public String toString() {
 		return this.getTitle();
 	}
+
+	public String getCode() {
+		return code;
+	}
+	
+	
 	
 	
 	

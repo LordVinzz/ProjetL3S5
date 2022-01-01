@@ -10,9 +10,9 @@ import javax.swing.tree.TreePath;
 public class TreeMouseListener implements MouseListener {
 
 	private JTree tree;
-	private Interface3 interfacz;
+	private Interface interfacz;
 
-	public TreeMouseListener(JTree tree, Interface3 interfacz) {
+	public TreeMouseListener(JTree tree, Interface interfacz) {
 		this.tree = tree;
 		this.interfacz = interfacz;
 	}
@@ -39,6 +39,8 @@ public class TreeMouseListener implements MouseListener {
 					for (Message m : ticket.getHistory()) {
 						interfacz.addMessageToTicket(m);
 					}
+					
+					interfacz.setCurrentTicket(ticket);
 				} else {
 					interfacz.clearMessagesFromTicket();
 				}

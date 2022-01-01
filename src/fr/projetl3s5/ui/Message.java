@@ -12,13 +12,13 @@ import javax.swing.JPanel;
 public class Message implements Comparable<Message> {
 
 	private User creator;
-	private int uploadDate;
+	private long uploadDate;
 	private String content;
 	private int readBy;
 	private int nbTotalMembers;
 	private MsgState state;
 
-	public Message(User creator, int uploadDate, String content, int readBy, int nbTotalMembers, MsgState state) {
+	public Message(User creator, long uploadDate, String content, int readBy, int nbTotalMembers, MsgState state) {
 		this.creator = creator;
 		this.uploadDate = uploadDate;
 		this.content = content;
@@ -27,7 +27,7 @@ public class Message implements Comparable<Message> {
 		this.state = state;
 	}
 
-	public int getUploadDate() {
+	public long getUploadDate() {
 		return uploadDate;
 	}
 
@@ -57,11 +57,15 @@ public class Message implements Comparable<Message> {
 
 	@Override
 	public int compareTo(Message m) {
-		int compar = -uploadDate + m.getUploadDate();
+		long compar = -uploadDate + m.getUploadDate();
 		if (compar == 0) {
 			return content.compareTo(m.getContent());
 		}
-		return compar;
+		return (int) (compar / abs(compar));
+	}
+	
+	private long abs(long l) {
+		return l < 0 ? -l : l;
 	}
 
 	@Override
