@@ -212,7 +212,7 @@ public class Interface {
 		splitPane.setLeftComponent(tree);
 		splitPane.setRightComponent(msgZone);
 
-		btnNewButton.addActionListener(new SendMessageListener(writingZone , this));
+		btnNewButton.addActionListener(new SendMessageListener(this));
 
 		masterPane.setLayout(layout);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -307,5 +307,9 @@ public class Interface {
 	public void setMsgT() {
 		msgT.setText("");
 		
+	}
+	
+	public JTextArea getWritingZone() {
+		return writingZone;
 	}
 }

@@ -14,19 +14,17 @@ import fr.projetl3s5.network.NewMessagePacket;
 
 public class SendMessageListener implements ActionListener, Context {
 
-	private JTextArea content;
 	private User user;
 	private Interface interfacz;
 
-	public SendMessageListener(JTextArea content, Interface interfacz) {
-		this.content = content;
+	public SendMessageListener(Interface interfacz) {
 		this.interfacz = interfacz;
 		this.user = interfacz.getUser();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String userMessage = content.getText();
+		String userMessage = interfacz.getWritingZone().getText();
 
 		if (!isMessageEmpty(userMessage)) {
 			JSONObject jObject = new JSONObject("{}");
