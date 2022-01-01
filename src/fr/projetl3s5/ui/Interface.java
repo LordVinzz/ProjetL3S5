@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.time.Clock;
-import java.time.ZoneId;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -45,7 +43,7 @@ public class Interface {
 	private Ticket currentTicket;
 	
 	private User user;
-
+	
 	public Interface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
@@ -214,7 +212,7 @@ public class Interface {
 		splitPane.setLeftComponent(tree);
 		splitPane.setRightComponent(msgZone);
 
-		btnNewButton.addActionListener(new SendMessageListener(writingZone , this, user));
+		btnNewButton.addActionListener(new SendMessageListener(writingZone , this));
 
 		masterPane.setLayout(layout);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -235,7 +233,7 @@ public class Interface {
 		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
 
 		JButton sendButton = new JButton("Nouveau Ticket");
-		sendButton.addActionListener(new SendNewTicket(msgT, nameT, listGroupes, this));
+		sendButton.addActionListener(new SendNewTicket(listGroupes, this));
 
 		selectGr.add(new JLabel("Selection de groupe :"));
 		selectGr.add(listGroupes);
@@ -292,5 +290,22 @@ public class Interface {
 	
 	public User getUser() {
 		return user;
+	}
+	
+	public JTextField getNameT() {
+		return nameT;
+	}
+	
+	public JTextArea getMsgT() {
+		return msgT;
+	}
+
+	public void setNameT() {
+		nameT.setText("");
+	}
+
+	public void setMsgT() {
+		msgT.setText("");
+		
 	}
 }

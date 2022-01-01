@@ -106,6 +106,7 @@ public class User implements Context{
 			listTickets.get(g).add(t);
 			nbTotalTicket++;
 		}
+		updateInterface();
 	}
 
 	public void setInterface(Interface interface1) {

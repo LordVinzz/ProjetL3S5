@@ -14,14 +14,10 @@ public class SendNewTicket implements ActionListener {
 	String sujet;
 	String groupe;
 
-	JTextArea msg;
-	JTextField nomS;
 	JComboBox<String> listG;
 	Interface interfacz;
 
-	public SendNewTicket(JTextArea msg, JTextField nomS, JComboBox<String> listG, Interface interfacz) {
-		this.msg = msg;
-		this.nomS = nomS;
+	public SendNewTicket(JComboBox<String> listG, Interface interfacz) {
 		this.listG = listG;
 		this.interfacz = interfacz;
 	}
@@ -29,12 +25,16 @@ public class SendNewTicket implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		msgSaisi = msg.getText();
-		sujet = nomS.getText();
+		msgSaisi = interfacz.getMsgT().getText();
+		sujet = interfacz.getNameT().getText();
 
 		if (textAndTopicFilled()) {
 			JOptionPane.showMessageDialog(null, "Ticket crée avec succès !", "Nouveau Ticket", JOptionPane.INFORMATION_MESSAGE);
 			// i.getUser().addToTicketList(new Ticket(sujet, comboBox.getSelectedItem);
+			//TODO ; ajout dans la base de données
+			interfacz.setNameT();
+			interfacz.setMsgT();
+			
 		} else {
 			String errMessage = "Erreur dans la création du ticket! Vérifiez les conditions suivantes ;\n\n"
 					+ "- Vous avez inséré un sujet, un message et un groupe destinataire\n"

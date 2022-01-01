@@ -46,8 +46,7 @@ public class Ticket implements Comparable<Ticket>{
 			history.add(msg);
 		}
 	}
-	
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -81,7 +80,7 @@ public class Ticket implements Comparable<Ticket>{
 	public boolean equals(Object obj) {
 		if(obj instanceof Ticket) {
 			Ticket ticket = (Ticket) obj;
-			return group.equals(ticket.getGroup()) && title.equals(ticket.getTitle());
+			return group.equals(ticket.getGroup()) && title.equals(ticket.getTitle()) || group.equals(ticket.getGroup()) && history.pollFirst().equals(ticket.getHistory().pollFirst());
 		}
 		return false;
 	}

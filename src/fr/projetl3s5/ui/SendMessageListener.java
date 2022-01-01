@@ -18,10 +18,10 @@ public class SendMessageListener implements ActionListener, Context {
 	private User user;
 	private Interface interfacz;
 
-	public SendMessageListener(JTextArea content, Interface interfacz, User user) {
+	public SendMessageListener(JTextArea content, Interface interfacz) {
 		this.content = content;
 		this.interfacz = interfacz;
-		this.user = user;
+		this.user = interfacz.getUser();
 	}
 
 	@Override
