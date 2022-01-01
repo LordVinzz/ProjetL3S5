@@ -45,14 +45,22 @@ public class SendMessageListener implements ActionListener, Context {
 		}
 	}
 
-	public boolean isMessageEmpty(String msgSaisi) {
-		String s1 = msgSaisi.trim();
+	public boolean isMessageEmpty(String message) {
+		String s1 = message.trim();
 		return s1.isEmpty();
 	}
 
 	public void addMessageFromServer(JSONObject jObject) {
-		Message msg = new Message(user, jObject.getInt("Date"), jObject.getString("Content"), 1, interfacz.getCurrentTicket().getTotalMember(), MsgState.RECU);
-		interfacz.addMessageToTicket(msg);
+		Ticket ticket = interfacz.getCurrentTicket();
+		Message msg = new Message(user, jObject.getLong("Date"), jObject.getString("Content"), 1, ticket.getTotalMember(), MsgState.RECU);
+		ticket.addHistory(msg);
+		interfacz.clearMasterPane();
+		
+		for (Message m : ticket.getHistory()) {
+			interfacz.addMessageToTicket(m);
+		}
+		
+		interfacz.refreshScrollPane();
 	}
 	
 }

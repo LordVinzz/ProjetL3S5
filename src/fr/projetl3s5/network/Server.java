@@ -41,7 +41,7 @@ public class Server {
 	}
 
 	public static void init() {
-		if(instance == null) {			
+		if(instance == null) {
 			instance = new Server();
 			instance.listen();
 		}

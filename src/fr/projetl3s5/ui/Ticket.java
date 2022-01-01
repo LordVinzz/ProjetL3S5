@@ -42,7 +42,7 @@ public class Ticket implements Comparable<Ticket>{
 				jO.getString("Name"),
 				jO.getString("FName")
 			);
-			Message msg = new Message(user, jO.getInt("Date"), jO.getString("Content"),  jO.getInt("ReadBy"), this.totalMember, MsgState.EN_ATTENTE);
+			Message msg = new Message(user, jO.getLong("Date"), jO.getString("Content"),  jO.getInt("ReadBy"), this.totalMember, MsgState.EN_ATTENTE);
 			history.add(msg);
 		}
 	}
@@ -68,9 +68,8 @@ public class Ticket implements Comparable<Ticket>{
 		return history;
 	}
 	
-	public NavigableSet<Message> setHistory(Message m){
+	public void addHistory(Message m){
 		history.add(m);
-		return history;
 	}
 	
 	@Override

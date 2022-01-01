@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.time.Clock;
+import java.time.ZoneId;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -106,12 +108,16 @@ public class Interface {
 		return tree;
 	}
 
-	public void addMessageToTicket(Message msg) {
+	public void addMessageToTicket(Message message) {
 		JPanel childPane = new JPanel();
 		JPanel lastPane = getLastMasterPaneComp();		
-		JLabel emailLabel = new JLabel("De : "+msg.getCreator().getId());
-		JLabel dateLabel = new JLabel(String.format("A : %d", msg.getUploadDate()));
-		JLabel textArea = new JLabel(msg.getContent());
+		JLabel emailLabel = new JLabel(String.format("De : %s", message.getCreator().getId()));
+		JLabel dateLabel = new JLabel(String.format("A : %s", message.getStringDate()));
+		//textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
+		JTextArea textArea = new JTextArea(String.format("\n%s", message.getContent()));
+		
+		textArea.setEditable(false);
+		textArea.setBackground(UIManager.getColor("Panel.background"));
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		
@@ -143,7 +149,7 @@ public class Interface {
 		constraints.gridy = 1;
 		childPane.add(textArea, constraints);
 
-		setColorMsg(msg.getReadBy(), childPane, msg);
+		setColorMsg(message.getReadBy(), childPane, message);
 
 		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComp());
 		
@@ -188,7 +194,7 @@ public class Interface {
 		return null;
 	}
 
-	public void clearMessagesFromTicket() {
+	public void clearMasterPane() {
 		masterPane.removeAll();
 	}
 

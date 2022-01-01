@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -13,6 +16,7 @@ public class Message implements Comparable<Message> {
 
 	private User creator;
 	private long uploadDate;
+	private String dateAsString;
 	private String content;
 	private int readBy;
 	private int nbTotalMembers;
@@ -25,6 +29,8 @@ public class Message implements Comparable<Message> {
 		this.readBy=readBy;
 		this.nbTotalMembers=nbTotalMembers;
 		this.state = state;
+		DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy");
+		this.dateAsString = dateFormat.format(new Date(uploadDate));
 	}
 
 	public long getUploadDate() {
@@ -57,15 +63,11 @@ public class Message implements Comparable<Message> {
 
 	@Override
 	public int compareTo(Message m) {
-		long compar = -uploadDate + m.getUploadDate();
+		long compar = m.getUploadDate() - uploadDate;
 		if (compar == 0) {
 			return content.compareTo(m.getContent());
 		}
-		return (int) (compar / abs(compar));
-	}
-	
-	private long abs(long l) {
-		return l < 0 ? -l : l;
+		return (int) compar;
 	}
 
 	@Override
@@ -77,51 +79,9 @@ public class Message implements Comparable<Message> {
 		}
 		return false;
 	}
-	
-	public JPanel toJPanel() {
-		JPanel affich = new JPanel(new GridBagLayout());
-		affich.setBorder(BorderFactory.createLineBorder(Color.black));
-		JLabel affichUser = new JLabel("De : " + getCreator().getPrenom() + " " + getCreator().getNom());
-		JLabel affichDate = new JLabel("A : " + getUploadDate());
-		JLabel affichContent = new JLabel(getContent());
-		int readBy=getReadBy();
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.anchor = GridBagConstraints.WEST;
-		constraints.insets = new Insets(10, 10, 10, 10);
 
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-
-		affich.add(affichUser, constraints);
-
-		constraints.gridx = 1;
-		affich.add(affichDate, constraints);
-
-		constraints.gridx = 0;
-		constraints.gridy = 1;
-		affich.add(affichContent, constraints);
-
-		constraints.gridx = 1;
-		constraints.gridy = 2;
-		
-		// constraints.gridwidth = 2;
-		
-		if(readBy==0) {
-			affich.setBackground(Color.RED);
-		}
-		
-		else if(readBy<getNbTotalMembers()) {
-			affich.setBackground(Color.ORANGE);
-		}
-		
-		else if(readBy==getNbTotalMembers()) {
-			affich.setBackground(Color.GREEN);
-		}
-		
-		else {
-			affich.setBackground(Color.GRAY);
-		}
-		return affich;
+	public Object getStringDate() {
+		return dateAsString;
 	}
-
+	
 }

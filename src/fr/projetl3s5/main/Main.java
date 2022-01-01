@@ -1,10 +1,12 @@
 package fr.projetl3s5.main;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import fr.projetl3s5.network.Client;
 import fr.projetl3s5.network.Server;
-import fr.projetl3s5.ui.Interface;
 import fr.projetl3s5.ui.Login;
-import fr.projetl3s5.ui.User;
 
 public class Main {
 
@@ -16,7 +18,7 @@ public class Main {
 			}
 		};
 		t.start();
-//
+		
 //		try {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {

@@ -34,7 +34,7 @@ public class TreeMouseListener implements MouseListener {
 					
 					Ticket ticket = (Ticket) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject();
 					
-					interfacz.clearMessagesFromTicket();
+					interfacz.clearMasterPane();
 					
 					for (Message m : ticket.getHistory()) {
 						interfacz.addMessageToTicket(m);
@@ -42,7 +42,7 @@ public class TreeMouseListener implements MouseListener {
 					
 					interfacz.setCurrentTicket(ticket);
 				} else {
-					interfacz.clearMessagesFromTicket();
+					interfacz.clearMasterPane();
 				}
 				interfacz.refreshScrollPane();
 			} else if (e.getClickCount() == 2) {
