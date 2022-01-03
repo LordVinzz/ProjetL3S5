@@ -79,8 +79,8 @@ public class Interface {
 
 		leafGroup = new DefaultMutableTreeNode(user.getGroup());
 
-		for (Ticket t : user.getTickets()) {
-			leafGroup.add(new DefaultMutableTreeNode(t));
+		for (Ticket t : user.getTickets()) {	
+			leafGroup.add(new DefaultMutableTreeNode(t));	
 		}
 
 		root.add(leafGroup);

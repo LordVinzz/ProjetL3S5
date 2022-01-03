@@ -31,8 +31,12 @@ public class TreeMouseListener implements MouseListener {
 		if (selRow != -1) {
 			if (e.getClickCount() == 1) {
 				if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof Ticket) {
-					
 					Ticket ticket = (Ticket) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject();
+					
+					if(ticket.getTitleIsInBold()) {
+						ticket.setTitleIsInBold();
+						interfacz.setTicketTree();
+					}
 					
 					interfacz.clearMasterPane();
 					
@@ -41,6 +45,8 @@ public class TreeMouseListener implements MouseListener {
 					}
 					
 					interfacz.setCurrentTicket(ticket);
+					
+
 				} else {
 					interfacz.clearMasterPane();
 				}
