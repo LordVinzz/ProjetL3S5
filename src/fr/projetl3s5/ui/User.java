@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 import org.json.JSONObject;
 
@@ -18,10 +19,9 @@ public class User implements Context{
 	private String id, name, fName;
 	private Client client;
 	private int nbTotalTicket = 0;
-	private int groupsMask;
 
-	private List<String> group = new ArrayList<>();
-	private NavigableMap<String, List<Ticket>> listTickets = new TreeMap<>((String g1, String g2) -> g1.compareTo(g2));
+	private Group group;
+	private NavigableSet<Ticket> tickets = new TreeSet<>();
 	private Interface interfacz;
 
 	public User(String id, String name, String fName) {
@@ -35,16 +35,8 @@ public class User implements Context{
 		this.fName = fName;
 		this.name = name;
 		this.client = client;
-		this.groupsMask = group;
+		this.group = Group.getGroupByID(group);
 
-		for (Group g : Group.getGroupsByID(group)) {
-			this.group.add(g.toString());
-		}
-
-		for (Group g : Group.values()) {
-			listTickets.put(g.toString(), new ArrayList<>());
-		}
-		
 		getTicketsFromServer();
 		client.pendExecution(this);
 	}
@@ -54,7 +46,7 @@ public class User implements Context{
 		try {
 			JSONObject jObject = new JSONObject("{}");
 			jObject.put("username", id);
-			jObject.put("group", groupsMask);
+			jObject.put("group", group.getId());
 			client.getOut().writeObject(new RetrieveTicketsPacket(jObject.toString()));
 		} catch (IOException e) {
 		}
@@ -72,7 +64,7 @@ public class User implements Context{
 		return name;
 	}
 
-	public List<String> getGroups() {
+	public Group getGroup() {
 		return group;
 	}
 	
@@ -84,8 +76,8 @@ public class User implements Context{
 		return nbTotalTicket;
 	}
 
-	public NavigableMap<String, List<Ticket>> getListTicket() {
-		return listTickets;
+	public NavigableSet<Ticket> getTickets() {
+		return tickets;
 	}
 
 	@Override
@@ -94,18 +86,15 @@ public class User implements Context{
 		if (obj instanceof User) {
 			User user = (User) obj;
 			return id.equals(user.getId()) && fName.equals(user.getPrenom()) && name.equals(user.getNom())
-					&& group.equals(user.getGroups());
+					&& group.equals(user.getGroup());
 		}
 
 		return false;
 	}
 
 	public synchronized void addToTicketList(Ticket t) {
-		String g = t.getGroup().toString();
-		if (group.contains(g)) {
-			listTickets.get(g).add(t);
-			nbTotalTicket++;
-		}
+		tickets.add(t);
+		nbTotalTicket++;
 		updateInterface();
 	}
 

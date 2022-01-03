@@ -23,6 +23,7 @@ public class Login implements Context {
 	private Client client;
 	private JSONObject lastCredentials = null;
 	private JFrame frame;
+	private JButton validateButton;
 	
 	public Login(Client client) {
 		this.client = client;
@@ -43,6 +44,7 @@ public class Login implements Context {
 			Interface i2 = new Interface(user);
 			frame.dispose();
 		}
+		validateButton.setEnabled(true);
 	}
 
 	public JSONObject getLastCredentials() {
@@ -56,17 +58,17 @@ public class Login implements Context {
 		JLabel labelUser = new JLabel("Identifiant: ");
 		JLabel labelPass = new JLabel("Mot de Passe: ");
 		JTextField textUser = new JTextField(20);
-		textUser.setText("root@univ-tlse3.fr");
+		textUser.setText("elevetest@univ-tlse3.fr");
 		JPasswordField fieldPass = new JPasswordField(20);
-		fieldPass.setText("root");
-		JButton valider = new JButton("Valider");
-		valider.addActionListener(new IDValidator(fieldPass, textUser, client, this));
+		fieldPass.setText("eleve");
+		validateButton = new JButton("Valider");
+		validateButton.addActionListener(new IDValidator(fieldPass, textUser, client, this));
 
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
 		GridBagConstraints constraints = new GridBagConstraints();
-		setValues(labelUser, labelPass, textUser, fieldPass, valider, newPanel, constraints);
+		setValues(labelUser, labelPass, textUser, fieldPass, validateButton, newPanel, constraints);
 
 		frame.add(newPanel);
 		frame.pack();
@@ -74,6 +76,10 @@ public class Login implements Context {
 		frame.setVisible(true);
 	}
 
+	public JButton getValidateButton() {
+		return validateButton;
+	}
+	
 	private void setValues(JLabel labelUser, JLabel labelPass, JTextField textUser, JPasswordField fieldPass,
 			JButton valider, JPanel newPanel, GridBagConstraints constraints) {
 		constraints.anchor = GridBagConstraints.WEST;

@@ -5,19 +5,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
-public class SendNewTicket implements ActionListener {
+import fr.projetl3s5.network.Context;
 
-	String msgSaisi;
-	String sujet;
-	String groupe;
+public class NewTicketListener implements ActionListener, Context{
 
 	JComboBox<String> listG;
 	Interface interfacz;
 
-	public SendNewTicket(JComboBox<String> listG, Interface interfacz) {
+	public NewTicketListener(JComboBox<String> listG, Interface interfacz) {
 		this.listG = listG;
 		this.interfacz = interfacz;
 	}
@@ -25,15 +21,15 @@ public class SendNewTicket implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		msgSaisi = interfacz.getMsgT().getText();
-		sujet = interfacz.getNameT().getText();
+		String message = interfacz.getMsgT().getText();
+		String topic = interfacz.getNameT().getText();
 
-		if (textAndTopicFilled()) {
-			JOptionPane.showMessageDialog(null, "Ticket crée avec succès !", "Nouveau Ticket", JOptionPane.INFORMATION_MESSAGE);
-			// i.getUser().addToTicketList(new Ticket(sujet, comboBox.getSelectedItem);
-			//TODO ; ajout dans la base de données
-			interfacz.setNameT();
-			interfacz.setMsgT();
+		if (textAndTopicFilled(message, topic)) {
+			
+			interfacz.getUser().getClient().getOut().writeObject(new NewTopicObject());
+			
+			interfacz.clearTicketTopic();
+			interfacz.clearMessageTopic();
 			
 		} else {
 			String errMessage = "Erreur dans la création du ticket! Vérifiez les conditions suivantes ;\n\n"
@@ -43,9 +39,9 @@ public class SendNewTicket implements ActionListener {
 		}
 	}
 
-	public boolean textAndTopicFilled() {
-		String s1 = msgSaisi.trim();
-		String s2 = sujet.trim();
+	public boolean textAndTopicFilled(String message, String topic) {
+		String s1 = message.trim();
+		String s2 = topic.trim();
 		return !s1.isEmpty() && !s2.isEmpty();
 	}
 }

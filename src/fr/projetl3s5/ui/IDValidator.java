@@ -39,7 +39,7 @@ public class IDValidator implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		login.getValidateButton().setEnabled(false);
 		JSONObject jObject = createCredentials(textField, passwordField);
 		try {
 			client.getOut().writeObject(new ConnectionPacket(jObject.toString()));

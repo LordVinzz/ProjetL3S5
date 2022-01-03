@@ -73,7 +73,7 @@ public class Ticket implements Comparable<Ticket>{
 	
 	@Override
 	public int compareTo(Ticket t) {
-		return history.pollLast().compareTo(t.getHistory().pollLast());
+		return history.last().compareTo(t.getHistory().last());
 	}
 	
 	@Override

@@ -33,17 +33,17 @@ public class Interface {
 	private JPanel masterPane = new JPanel();
 	private SpringLayout layout = new SpringLayout();
 	private JScrollPane scrollPane = new JScrollPane(masterPane);
-	private DefaultMutableTreeNode root, leafGroup[];
+	private DefaultMutableTreeNode root, leafGroup;
 	private DefaultTreeModel model;
-	
+
 	private JTextArea writingZone = new JTextArea(3, 50);
 	private JTextField nameT = new JTextField(25);
 	private JTextArea msgT = new JTextArea(5, 50);
-	
+
 	private Ticket currentTicket;
-	
+
 	private User user;
-	
+
 	public Interface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
@@ -65,31 +65,26 @@ public class Interface {
 		scrollPane.revalidate();
 		scrollPane.repaint();
 	}
-	
+
 	public Ticket getCurrentTicket() {
 		return currentTicket;
 	}
-	
+
 	public void setCurrentTicket(Ticket currentTicket) {
 		this.currentTicket = currentTicket;
 	}
-	
+
 	public void setTicketTree() {
 		root.removeAllChildren();
 
-		leafGroup = new DefaultMutableTreeNode[Group.values().length];
-		int indGroup = 0;
+		leafGroup = new DefaultMutableTreeNode(user.getGroup());
 
-		for (String group : user.getGroups()) {
-
-			leafGroup[indGroup] = new DefaultMutableTreeNode(group);
-
-			for (Ticket t : user.getListTicket().get(group)) {
-				leafGroup[indGroup].add(new DefaultMutableTreeNode(t));
-			}
-			root.add(leafGroup[indGroup]);
-			indGroup++;
+		for (Ticket t : user.getTickets()) {
+			leafGroup.add(new DefaultMutableTreeNode(t));
 		}
+
+		root.add(leafGroup);
+
 		if (model != null)
 			model.reload();
 	}
@@ -108,17 +103,19 @@ public class Interface {
 
 	public void addMessageToTicket(Message message) {
 		JPanel childPane = new JPanel();
-		JPanel lastPane = getLastMasterPaneComp();		
-		JLabel emailLabel = new JLabel(String.format("De : %s", message.getCreator().getId()));
+		JPanel lastPane = getLastMasterPaneComp();
+		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(), message.getCreator().getNom(), message.getCreator().getId()));
 		JLabel dateLabel = new JLabel(String.format("A : %s", message.getStringDate()));
-		//textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
+		// textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
 		JTextArea textArea = new JTextArea(String.format("\n%s", message.getContent()));
+
+		textArea.addMouseListener(new MessageStateListener(message));
 		
 		textArea.setEditable(false);
 		textArea.setBackground(UIManager.getColor("Panel.background"));
 
 		GridBagConstraints constraints = new GridBagConstraints();
-		
+
 		if (lastPane != null) {
 			layout.putConstraint(SpringLayout.NORTH, childPane, 6, SpringLayout.SOUTH, lastPane);
 		}
@@ -147,13 +144,13 @@ public class Interface {
 		constraints.gridy = 1;
 		childPane.add(textArea, constraints);
 
-		setColorMsg(message.getReadBy(), childPane, message);
+		setMessageColor(message.getReadBy(), childPane, message);
 
 		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComp());
-		
+
 		writingZone.setText("");
 	}
-	
+
 	public GridBagLayout setNewGridBagLayout() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 570, 0 };
@@ -162,18 +159,18 @@ public class Interface {
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
 		return gridBagLayout;
 	}
-	
-	public void setColorMsg(int readBy, JPanel childPane, Message msg) {
-		
+
+	public void setMessageColor(int readBy, JPanel childPane, Message message) {
+
 		if (readBy == 0) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
 		}
 
-		else if (readBy < msg.getNbTotalMembers()) {
+		else if (readBy < message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
 		}
 
-		else if (readBy == msg.getNbTotalMembers()) {
+		else if (readBy == message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
 		}
 
@@ -226,19 +223,19 @@ public class Interface {
 	private void createSecondTab(JTabbedPane ticketsTab) {
 		JPanel selectGr = new JPanel();
 		JPanel selectS = new JPanel();
-		JLabel title = new JLabel("Creer un fil de discussion");
+		JLabel title = new JLabel("Créer un fil de discussion");
 		JPanel msg = new JPanel();
 		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
 
-		JComboBox<String> listGroupes = new JComboBox<>(allGroupes());
+		JComboBox<String> listGroupes = new JComboBox<>(groupsXorUser());
 
 		JButton sendButton = new JButton("Nouveau Ticket");
-		sendButton.addActionListener(new SendNewTicket(listGroupes, this));
+		sendButton.addActionListener(new NewTicketListener(listGroupes, this));
 
 		selectGr.add(new JLabel("Selection de groupe :"));
 		selectGr.add(listGroupes);
 
-		selectS.add(new JLabel("Nom du sujet :"));
+		selectS.add(new JLabel("Sujet :"));
 		selectS.add(nameT);
 
 		msg.add(new JLabel("Message :"));
@@ -277,38 +274,41 @@ public class Interface {
 		return newPanel;
 	}
 
-	public String[] allGroupes() {
-		Group[] listeGroupes = Group.values();
-		String[] lGroupes = new String[listeGroupes.length];
-		int ind = 0;
-		for (Group g : listeGroupes) {
-			lGroupes[ind] = g.toString();
-			ind++;
+	public String[] groupsXorUser() {
+		Group[] groupList = Group.values();
+		String[] stringGroupList = new String[groupList.length - 1];
+		
+		int i = 0;
+		for (Group g : groupList) {
+			if(g != user.getGroup()) {
+				stringGroupList[i++] = g.toString();
+			}
 		}
-		return lGroupes;
+		
+		return stringGroupList;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
-	
+
 	public JTextField getNameT() {
 		return nameT;
 	}
-	
+
 	public JTextArea getMsgT() {
 		return msgT;
 	}
 
-	public void setNameT() {
+	public void clearTicketTopic() {
 		nameT.setText("");
 	}
 
-	public void setMsgT() {
+	public void clearMessageTopic() {
 		msgT.setText("");
-		
+
 	}
-	
+
 	public JTextArea getWritingZone() {
 		return writingZone;
 	}

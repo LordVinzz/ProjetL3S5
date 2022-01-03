@@ -1,6 +1,8 @@
 package fr.projetl3s5.db;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Connection;
@@ -11,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fr.projetl3s5.groups.Group;
@@ -68,7 +71,7 @@ public class DatabaseCommunicator {
 					
 					statement = connection.createStatement();
 					resultSet = statement.executeQuery(String.format(
-							"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' AND threadstable._group = '%d'", id, mask));
+							"SELECT * FROM threadstable WHERE threadstable.fPoster = '%s' OR threadstable._group = '%d'", id, mask));
 					
 					while(resultSet.next()) {
 						File file = new File( String.format("serverhistory/%s.json", resultSet.getString("filename")) );
@@ -103,4 +106,54 @@ public class DatabaseCommunicator {
 		}
 		return 0;
 	}
+
+	public static synchronized boolean createNewTopic(String topic, int group, String id, String name, String fname, String content) {
+
+		try {
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("SELECT MAX(pKey) FROM threadstable");
+			
+			resultSet.next();
+			
+			int max = resultSet.getInt(1) + 1;
+			
+			statement = connection.createStatement();
+			statement.executeUpdate(String.format(
+					"INSERT INTO threadstable (pKey, thread, _group, fPoster) VALUES (%d, '%s', %d, '%s')"
+					, max, topic, group, id));
+			
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(String.format("SELECT * FROM threadstable WHERE pKey = %d", max));
+			
+			resultSet.next();
+			String filename = resultSet.getString("filename");
+			
+			File f = new File(filename);
+			FileOutputStream fos = new FileOutputStream(f);
+			
+			JSONObject jObject = new JSONObject("{}");
+			jObject.put("Group", group);
+			jObject.put("TotalMembers", getGroupLength(group));
+			jObject.put("Code", filename);
+			
+			JSONArray jArray = new JSONArray();
+			
+			JSONObject message = new JSONObject("{}");
+			message.put("Content", content);
+			message.put("ReadBy", 1);
+			message.put("Id", id);
+			message.put("Name", name);
+			message.put("FName", fname);
+			message.put("Date", System.currentTimeMillis());
+			
+			jArray.put(message);
+			
+			jObject.put("Messages", jArray);
+			
+			fos.write(jObject.toString().getBytes());
+			return true;
+		}catch(SQLException | IOException e) {}
+		return false;
+	}
+	
 }

@@ -1,1 +1,80 @@
-{"Group":1,"Messages":[{"Content":"bonjour je vais pas bien lol","ReadBy":50,"Id":"micheldesbois1@irit.fr","FName":"desbois","Date":1234,"Name":"michel"},{"Content":"bojour je vais bien","ReadBy":25,"Id":"kevindesbois1@irit.fr","FName":"desbois","Date":3456,"Name":"kevin"},{"Content":"On est en 2022","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641049187099,"Name":"Root"},{"Content":"j'ajoute un nouveau message","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050284680,"Name":"Root"},{"Content":"ceci est un nouveau message","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050363173,"Name":"Root"},{"Content":"Le message de 16h20 !!!","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050462558,"Name":"Root"},{"Content":"le message de 22","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050576941,"Name":"Root"},{"Content":"le message de 23","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050615952,"Name":"Root"},{"Content":"pourquoi les gens \nils écrivent \nles messages sur plusieurs lignes\nc'est chiant juste","ReadBy":1,"Id":"root@univ-tlse3.fr","FName":"Root","Date":1641050632092,"Name":"Root"}],"Title":"Bonjouuur","TotalMembers":70,"Code":"4df8769e20090c9c0414b25cc14fcf2a"}
+{
+  "Group": 1,
+  "Messages": [
+    {
+      "Content": "On est en 2022",
+      "ReadBy": 1,
+      "Id": "root@univ-tlse3.fr",
+      "FName": "Root",
+      "Date": 1641049187099,
+      "Name": "Root"
+    },
+    {
+      "Content": "Et bien oui !",
+      "ReadBy": 1,
+      "Id": "jason@toisondor.fr",
+      "FName": "Jason",
+      "Date": 1641049787099,
+      "Name": "Toison D'or"
+    },
+    {
+      "Content": "Comment le saviez vous ?",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221852952,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "Je suis ï¿½lï¿½ve ï¿½lï¿½ve, je suis mal ï¿½levï¿½",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221867838,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "J'utilise\nle \nmultiline\net \nca marche du feu\nde dieu !!!\nomg\nomg\nomg",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221885666,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "<br>brrrr<br>brrrrr",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221899228,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "L'intï¿½gration HTML marche pas :/",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221909927,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "Volumes c'est un bon groupe xd",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221918463,
+      "Name": "Eleve"
+    },
+    {
+      "Content": "On va pouvoir tester la scrollbar",
+      "ReadBy": 1,
+      "Id": "elevetest@univ-tlse3.fr",
+      "FName": "Eleve",
+      "Date": 1641221926587,
+      "Name": "Eleve"
+    }
+  ],
+  "Title": "Bonjouuur",
+  "TotalMembers": 70,
+  "Code": "4df8769e20090c9c0414b25cc14fcf2a"
+}
