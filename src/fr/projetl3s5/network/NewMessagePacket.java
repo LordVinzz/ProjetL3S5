@@ -39,11 +39,11 @@ public class NewMessagePacket extends Packet {
 			
 			
 			userMessage.put("Name", user.getPrenom());
-			userMessage.put("FName", user.getNom());
+			userMessage.put("FName", user.getFName());
 			userMessage.put("Id", user.getId());
 			userMessage.put("Date", System.currentTimeMillis());
 			userMessage.put("Content", jObject.get("Content"));
-			userMessage.put("ReadBy", 1);
+			userMessage.put("ReadBy", new JSONArray(String.format("[%s]", user.getId())));
 			
 			messagesData.put(userMessage);
 			

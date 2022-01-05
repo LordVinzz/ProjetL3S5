@@ -16,8 +16,7 @@ public class Ticket implements Comparable<Ticket> {
 	private NavigableSet<Message> history = new TreeSet<>((Message m1, Message m2) -> m1.compareTo(m2));
 	private User creator;
 	private String code;
-	private boolean titleIsInBold = false;
-	private int nbMsgNON_LU;
+	private int nbUnreadMessages;
 
 	public Ticket(String titre, Group groupe, User createur, Message... messages) {
 		this.title = titre;
@@ -39,24 +38,10 @@ public class Ticket implements Comparable<Ticket> {
 		for (int i = 0; i < jArray.length(); i++) {
 			JSONObject jO = jArray.getJSONObject(i);
 			User user = new User(jO.getString("Id"), jO.getString("Name"), jO.getString("FName"));
-			Message msg = new Message(user, jO.getLong("Date"), jO.getString("Content"), jO.getInt("ReadBy"),
+			Message msg = new Message(user, jO.getLong("Date"), jO.getString("Content"), jO.getJSONArray("ReadBy"),
 					this.totalMember, MsgState.EN_ATTENTE);
 			history.add(msg);
 		}
-	}
-	
-	public int setNbMsgNON_LU() {
-		nbMsgNON_LU=0;
-		for(Message msg : getHistory()) {
-			if(msg.getReadBy()<msg.getNbTotalMembers()) {
-				nbMsgNON_LU++;
-			}
-		}
-		
-		if(nbMsgNON_LU>0 && !titleIsInBold) {
-			setTitleIsInBold();
-		}
-		return nbMsgNON_LU;
 	}
 
 	public String getTitle() {
@@ -75,9 +60,6 @@ public class Ticket implements Comparable<Ticket> {
 		return totalMember;
 	}
 
-	public boolean getTitleIsInBold() {
-		return titleIsInBold;
-	}
 
 	public NavigableSet<Message> getHistory() {
 		return history;
@@ -87,31 +69,38 @@ public class Ticket implements Comparable<Ticket> {
 		history.add(m);
 	}
 
-	public void setTitleIsInBold() {
-		titleIsInBold = !titleIsInBold;
-	}
-
 	@Override
 	public int compareTo(Ticket t) {
 		return history.last().compareTo(t.getHistory().last());
 	}
 
+	public void computeUnreadMessages(User self) {
+		for(Message message : history) {
+			if(!message.getReadBy().toList().contains(self.getId())) {
+				nbUnreadMessages++;
+			}
+		}
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Ticket) {
 			Ticket ticket = (Ticket) obj;
 			return group.equals(ticket.getGroup()) && title.equals(ticket.getTitle())
-					|| group.equals(ticket.getGroup()) && history.pollFirst().equals(ticket.getHistory().pollFirst());
+					|| group.equals(ticket.getGroup()) && history.first().equals(ticket.getHistory().first());
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		if (titleIsInBold) {
-			return String.format("<b>%s (%d)</b>", title, nbMsgNON_LU);
-		}
-		return this.getTitle();
+		if (nbUnreadMessages != 0)
+			return String.format("<html><b> %s (%d)</b></html>", title, nbUnreadMessages);
+		return title;
+	}
+
+	public void clearUnreadMessages() {
+		nbUnreadMessages = 0;
 	}
 
 	public String getCode() {

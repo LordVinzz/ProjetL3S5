@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fr.projetl3s5.network.Context;
@@ -50,7 +51,7 @@ public class SendMessageListener implements ActionListener, Context {
 
 	public void addMessageFromServer(JSONObject jObject) {
 		Ticket ticket = interfacz.getCurrentTicket();
-		Message msg = new Message(user, jObject.getLong("Date"), jObject.getString("Content"), 1, ticket.getTotalMember(), MsgState.RECU);
+		Message msg = new Message(user, jObject.getLong("Date"), jObject.getString("Content"), new JSONArray(String.format("[%s]", user.getId())), ticket.getTotalMember(), MsgState.RECU);
 		ticket.addHistory(msg);
 		interfacz.clearMasterPane();
 		

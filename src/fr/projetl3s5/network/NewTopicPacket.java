@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import fr.projetl3s5.db.DatabaseCommunicator;
 import fr.projetl3s5.ui.NewTicketListener;
+import fr.projetl3s5.ui.User;
 
 public class NewTopicPacket extends Packet{
 
@@ -28,8 +29,18 @@ public class NewTopicPacket extends Packet{
 					jObject.getString("Name"), jObject.getString("FName"), jObject.getString("Content")
 					);
 			
-		}else if(ctx instanceof NewTicketListener) {
+			jObject.clear();
+			jObject.put("Succeed", isTopicCreated);
 			
+			serv.getOut().writeObject(new NewTopicPacket(jObject.toString()));
+			
+		}else if(ctx instanceof NewTicketListener) {
+			NewTicketListener ntl = (NewTicketListener)ctx;
+			User u = ntl.getUser();
+			
+			u.getTicketsFromServer();
+			
+			ntl.getInterface().reloadTree();
 		}
 	}
 

@@ -2,10 +2,15 @@ package fr.projetl3s5.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import org.json.JSONObject;
+
+import fr.projetl3s5.network.SeenPacket;
 
 public class TreeMouseListener implements MouseListener {
 
@@ -33,10 +38,8 @@ public class TreeMouseListener implements MouseListener {
 				if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof Ticket) {
 					Ticket ticket = (Ticket) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject();
 					
-					if(ticket.getTitleIsInBold()) {
-						ticket.setTitleIsInBold();
-						interfacz.setTicketTree();
-					}
+					ticket.clearUnreadMessages();
+					interfacz.reloadTree();
 					
 					interfacz.clearMasterPane();
 					
@@ -46,6 +49,13 @@ public class TreeMouseListener implements MouseListener {
 					
 					interfacz.setCurrentTicket(ticket);
 					
+					JSONObject jObject = new JSONObject("{}");
+					jObject.put("Code", ticket.getCode());
+					jObject.put("Id", interfacz.getUser().getId());
+					
+					try {
+						interfacz.getUser().getClient().getOut().writeObject(new SeenPacket(jObject.toString()));
+					} catch (IOException e1) {}
 
 				} else {
 					interfacz.clearMasterPane();

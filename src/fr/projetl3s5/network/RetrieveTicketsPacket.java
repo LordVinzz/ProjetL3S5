@@ -46,8 +46,8 @@ public class RetrieveTicketsPacket extends Packet {
 				
 				user.addToTicketList(ticket);
 				
-				user.updateInterface();
 			}
+			user.updateInterface();
 		}
 	}
 

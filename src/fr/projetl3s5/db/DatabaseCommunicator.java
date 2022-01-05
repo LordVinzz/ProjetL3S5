@@ -128,11 +128,13 @@ public class DatabaseCommunicator {
 			resultSet.next();
 			String filename = resultSet.getString("filename");
 			
-			File f = new File(filename);
+			File f = new File(String.format("serverhistory/%s.json", filename));
 			FileOutputStream fos = new FileOutputStream(f);
-			
+			f.createNewFile();
+
 			JSONObject jObject = new JSONObject("{}");
 			jObject.put("Group", group);
+			jObject.put("Title", topic);
 			jObject.put("TotalMembers", getGroupLength(group));
 			jObject.put("Code", filename);
 			
@@ -140,7 +142,7 @@ public class DatabaseCommunicator {
 			
 			JSONObject message = new JSONObject("{}");
 			message.put("Content", content);
-			message.put("ReadBy", 1);
+			message.put("ReadBy", new JSONArray(String.format("[%s]", id)));
 			message.put("Id", id);
 			message.put("Name", name);
 			message.put("FName", fname);
@@ -151,6 +153,8 @@ public class DatabaseCommunicator {
 			jObject.put("Messages", jArray);
 			
 			fos.write(jObject.toString().getBytes());
+			fos.flush();
+			fos.close();
 			return true;
 		}catch(SQLException | IOException e) {}
 		return false;

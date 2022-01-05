@@ -7,6 +7,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,8 +28,12 @@ import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import fr.projetl3s5.groups.Group;
+import sun.misc.Unsafe;
 
 public class Interface {
 
@@ -33,7 +41,7 @@ public class Interface {
 	private JPanel masterPane = new JPanel();
 	private SpringLayout layout = new SpringLayout();
 	private JScrollPane scrollPane = new JScrollPane(masterPane);
-	private DefaultMutableTreeNode root, leafGroup;
+	private DefaultMutableTreeNode root, leafGroup[];
 	private DefaultTreeModel model;
 
 	private JTextArea writingZone = new JTextArea(3, 50);
@@ -41,6 +49,8 @@ public class Interface {
 	private JTextArea msgT = new JTextArea(5, 50);
 
 	private Ticket currentTicket;
+	
+	private JTree tree;
 
 	private User user;
 
@@ -76,17 +86,42 @@ public class Interface {
 
 	public void setTicketTree() {
 		root.removeAllChildren();
+		int groupLength = Group.values().length;
+		
+		leafGroup = new DefaultMutableTreeNode[groupLength];
 
-		leafGroup = new DefaultMutableTreeNode(user.getGroup());
+		for (int i = 0; i < groupLength; i++) {
+			leafGroup[i] = new DefaultMutableTreeNode(Group.values()[i]);
 
-		for (Ticket t : user.getTickets()) {	
-			leafGroup.add(new DefaultMutableTreeNode(t));	
+			for (Ticket t : user.getTickets()) {
+				if (t.getGroup() == Group.values()[i]) {
+					t.computeUnreadMessages(user);
+					DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(t);
+					
+					leafGroup[i].add(dmtn);
+				}
+			}
+
+			root.add(leafGroup[i]);
 		}
 
-		root.add(leafGroup);
-
 		if (model != null)
-			model.reload();
+			reloadTree();
+	}
+
+	public void reloadTree() {
+		model.reload();
+		expandAllNodes(tree, 0, tree.getRowCount());
+	}
+	
+	private void expandAllNodes(JTree tree, int startingIndex, int rowCount){
+	    for(int i=startingIndex;i<rowCount;++i){
+	        tree.expandRow(i);
+	    }
+
+	    if(tree.getRowCount()!=rowCount){
+	        expandAllNodes(tree, rowCount, tree.getRowCount());
+	    }
 	}
 
 	public JTree createTicketTree() {
@@ -94,9 +129,10 @@ public class Interface {
 
 		setTicketTree();
 
-		JTree tree = new JTree(root);
+		tree = new JTree(root);
 		model = (DefaultTreeModel) tree.getModel();
-
+		
+		
 		tree.addMouseListener(new TreeMouseListener(tree, this));
 		return tree;
 	}
@@ -104,7 +140,7 @@ public class Interface {
 	public void addMessageToTicket(Message message) {
 		JPanel childPane = new JPanel();
 		JPanel lastPane = getLastMasterPaneComp();
-		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(), message.getCreator().getNom(), message.getCreator().getId()));
+		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(), message.getCreator().getFName(), message.getCreator().getId()));
 		JLabel dateLabel = new JLabel(String.format("A : %s", message.getStringDate()));
 		// textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
 		JTextArea textArea = new JTextArea(String.format("\n%s", message.getContent()));
@@ -144,7 +180,7 @@ public class Interface {
 		constraints.gridy = 1;
 		childPane.add(textArea, constraints);
 
-		setMessageColor(message.getReadBy(), childPane, message);
+		setMessageColor(message.getReadBy().length(), childPane, message);
 
 		layout.putConstraint(SpringLayout.SOUTH, masterPane, 0, SpringLayout.SOUTH, getLastMasterPaneComp());
 
@@ -195,6 +231,7 @@ public class Interface {
 
 	private void addComponentsToTabbedPane(JTabbedPane ticketsTab) {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setDividerLocation(222);
 		JButton btnNewButton = new JButton("Envoyer");
 		JPanel writePanel = new JPanel();
 		JPanel msgZone = new JPanel(new BorderLayout());
@@ -227,7 +264,7 @@ public class Interface {
 		JPanel msg = new JPanel();
 		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
 
-		JComboBox<String> listGroupes = new JComboBox<>(groupsXorUser());
+		JComboBox<Group> listGroupes = new JComboBox<>(groupsXorUser());
 
 		JButton sendButton = new JButton("Nouveau Ticket");
 		sendButton.addActionListener(new NewTicketListener(listGroupes, this));
@@ -274,18 +311,18 @@ public class Interface {
 		return newPanel;
 	}
 
-	public String[] groupsXorUser() {
+	public Group[] groupsXorUser() {
 		Group[] groupList = Group.values();
-		String[] stringGroupList = new String[groupList.length - 1];
+		Group[] groupListXorUser = new Group[groupList.length - 1];
 		
 		int i = 0;
 		for (Group g : groupList) {
 			if(g != user.getGroup()) {
-				stringGroupList[i++] = g.toString();
+				groupListXorUser[i++] = g;
 			}
 		}
 		
-		return stringGroupList;
+		return groupListXorUser;
 	}
 
 	public User getUser() {

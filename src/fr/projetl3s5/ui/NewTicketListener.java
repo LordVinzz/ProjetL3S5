@@ -2,19 +2,24 @@ package fr.projetl3s5.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
+import org.json.JSONObject;
+
+import fr.projetl3s5.groups.Group;
 import fr.projetl3s5.network.Context;
+import fr.projetl3s5.network.NewTopicPacket;
 
 public class NewTicketListener implements ActionListener, Context{
 
-	JComboBox<String> listG;
+	JComboBox<Group> groupListComboBox;
 	Interface interfacz;
 
-	public NewTicketListener(JComboBox<String> listG, Interface interfacz) {
-		this.listG = listG;
+	public NewTicketListener(JComboBox<Group> listG, Interface interfacz) {
+		this.groupListComboBox = listG;
 		this.interfacz = interfacz;
 	}
 
@@ -26,7 +31,19 @@ public class NewTicketListener implements ActionListener, Context{
 
 		if (textAndTopicFilled(message, topic)) {
 			
-			interfacz.getUser().getClient().getOut().writeObject(new NewTopicObject());
+			User u = interfacz.getUser();
+			JSONObject jObject = new JSONObject("{}");
+			jObject.put("Topic", topic);
+			jObject.put("Group", ((Group)groupListComboBox.getSelectedItem()).getId());
+			jObject.put("Id", u.getId());
+			jObject.put("Name", u.getPrenom());
+			jObject.put("FName", u.getFName());
+			jObject.put("Content", message);
+			
+			try {
+				interfacz.getUser().getClient().getOut().writeObject(new NewTopicPacket(jObject.toString()));
+				interfacz.getUser().getClient().pendExecution(this);
+			} catch (IOException e1) {}
 			
 			interfacz.clearTicketTopic();
 			interfacz.clearMessageTopic();
@@ -43,5 +60,13 @@ public class NewTicketListener implements ActionListener, Context{
 		String s1 = message.trim();
 		String s2 = topic.trim();
 		return !s1.isEmpty() && !s2.isEmpty();
+	}
+	
+	public User getUser() {
+		return interfacz.getUser();
+	}
+	
+	public Interface getInterface() {
+		return interfacz;
 	}
 }

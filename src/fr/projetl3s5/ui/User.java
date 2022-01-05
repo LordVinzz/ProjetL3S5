@@ -38,7 +38,6 @@ public class User implements Context{
 		this.group = Group.getGroupByID(group);
 
 		getTicketsFromServer();
-		client.pendExecution(this);
 	}
 
 
@@ -48,6 +47,7 @@ public class User implements Context{
 			jObject.put("username", id);
 			jObject.put("group", group.getId());
 			client.getOut().writeObject(new RetrieveTicketsPacket(jObject.toString()));
+			client.pendExecution(this);
 		} catch (IOException e) {
 		}
 	}
@@ -57,11 +57,11 @@ public class User implements Context{
 	}
 
 	public String getPrenom() {
-		return fName;
+		return name;
 	}
 
-	public String getNom() {
-		return name;
+	public String getFName() {
+		return fName;
 	}
 
 	public Group getGroup() {
@@ -85,7 +85,7 @@ public class User implements Context{
 
 		if (obj instanceof User) {
 			User user = (User) obj;
-			return id.equals(user.getId()) && fName.equals(user.getPrenom()) && name.equals(user.getNom())
+			return id.equals(user.getId()) && fName.equals(user.getPrenom()) && name.equals(user.getFName())
 					&& group.equals(user.getGroup());
 		}
 
@@ -95,7 +95,6 @@ public class User implements Context{
 	public synchronized void addToTicketList(Ticket t) {
 		tickets.add(t);
 		nbTotalTicket++;
-		updateInterface();
 	}
 
 	public void setInterface(Interface interface1) {
