@@ -8,13 +8,13 @@ import fr.projetl3s5.db.DatabaseCommunicator;
 import fr.projetl3s5.ui.NewTicketListener;
 import fr.projetl3s5.ui.User;
 
-public class NewTopicPacket extends Packet{
+public class NewTicketPacket extends Packet{
 
 	private static final long serialVersionUID = -4592584283349467247L;
 
 	private String content;
 	
-	public NewTopicPacket(String content) {
+	public NewTicketPacket(String content) {
 		this.content = content;
 	}
 	
@@ -26,13 +26,14 @@ public class NewTopicPacket extends Packet{
 			
 			boolean isTopicCreated = DatabaseCommunicator.createNewTopic(
 					jObject.getString("Topic"), jObject.getInt("Group"), jObject.getString("Id"),
-					jObject.getString("Name"), jObject.getString("FName"), jObject.getString("Content")
+					jObject.getString("Name"), jObject.getString("FName"), jObject.getString("Content"),
+					jObject.getInt("UserGroup")
 					);
 			
 			jObject.clear();
 			jObject.put("Succeed", isTopicCreated);
 			
-			serv.getOut().writeObject(new NewTopicPacket(jObject.toString()));
+			serv.getOut().writeObject(new NewTicketPacket(jObject.toString()));
 			
 		}else if(ctx instanceof NewTicketListener) {
 			NewTicketListener ntl = (NewTicketListener)ctx;

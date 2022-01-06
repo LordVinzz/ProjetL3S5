@@ -107,7 +107,7 @@ public class DatabaseCommunicator {
 		return 0;
 	}
 
-	public static synchronized boolean createNewTopic(String topic, int group, String id, String name, String fname, String content) {
+	public static synchronized boolean createNewTopic(String topic, int group, String id, String name, String fname, String content, int userGroup) {
 
 		try {
 			statement = connection.createStatement();
@@ -135,7 +135,7 @@ public class DatabaseCommunicator {
 			JSONObject jObject = new JSONObject("{}");
 			jObject.put("Group", group);
 			jObject.put("Title", topic);
-			jObject.put("TotalMembers", getGroupLength(group));
+			jObject.put("TotalMembers", getGroupLength(group) + ((group == userGroup) ? 0 : 1));
 			jObject.put("Code", filename);
 			
 			JSONArray jArray = new JSONArray();

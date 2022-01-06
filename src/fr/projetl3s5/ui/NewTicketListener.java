@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import fr.projetl3s5.groups.Group;
 import fr.projetl3s5.network.Context;
-import fr.projetl3s5.network.NewTopicPacket;
+import fr.projetl3s5.network.NewTicketPacket;
 
 public class NewTicketListener implements ActionListener, Context{
 
@@ -35,13 +35,14 @@ public class NewTicketListener implements ActionListener, Context{
 			JSONObject jObject = new JSONObject("{}");
 			jObject.put("Topic", topic);
 			jObject.put("Group", ((Group)groupListComboBox.getSelectedItem()).getId());
+			jObject.put("UserGroup", interfacz.getUser().getGroup().getId());
 			jObject.put("Id", u.getId());
 			jObject.put("Name", u.getPrenom());
 			jObject.put("FName", u.getFName());
 			jObject.put("Content", message);
 			
 			try {
-				interfacz.getUser().getClient().getOut().writeObject(new NewTopicPacket(jObject.toString()));
+				interfacz.getUser().getClient().getOut().writeObject(new NewTicketPacket(jObject.toString()));
 				interfacz.getUser().getClient().pendExecution(this);
 			} catch (IOException e1) {}
 			

@@ -49,7 +49,7 @@ public class Interface {
 	private JTextArea msgT = new JTextArea(5, 50);
 
 	private Ticket currentTicket;
-	
+
 	private JTree tree;
 
 	private User user;
@@ -87,7 +87,7 @@ public class Interface {
 	public void setTicketTree() {
 		root.removeAllChildren();
 		int groupLength = Group.values().length;
-		
+
 		leafGroup = new DefaultMutableTreeNode[groupLength];
 
 		for (int i = 0; i < groupLength; i++) {
@@ -97,7 +97,7 @@ public class Interface {
 				if (t.getGroup() == Group.values()[i]) {
 					t.computeUnreadMessages(user);
 					DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(t);
-					
+
 					leafGroup[i].add(dmtn);
 				}
 			}
@@ -113,15 +113,15 @@ public class Interface {
 		model.reload();
 		expandAllNodes(tree, 0, tree.getRowCount());
 	}
-	
-	private void expandAllNodes(JTree tree, int startingIndex, int rowCount){
-	    for(int i=startingIndex;i<rowCount;++i){
-	        tree.expandRow(i);
-	    }
 
-	    if(tree.getRowCount()!=rowCount){
-	        expandAllNodes(tree, rowCount, tree.getRowCount());
-	    }
+	private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
+		for (int i = startingIndex; i < rowCount; ++i) {
+			tree.expandRow(i);
+		}
+
+		if (tree.getRowCount() != rowCount) {
+			expandAllNodes(tree, rowCount, tree.getRowCount());
+		}
 	}
 
 	public JTree createTicketTree() {
@@ -131,8 +131,7 @@ public class Interface {
 
 		tree = new JTree(root);
 		model = (DefaultTreeModel) tree.getModel();
-		
-		
+
 		tree.addMouseListener(new TreeMouseListener(tree, this));
 		return tree;
 	}
@@ -140,13 +139,14 @@ public class Interface {
 	public void addMessageToTicket(Message message) {
 		JPanel childPane = new JPanel();
 		JPanel lastPane = getLastMasterPaneComp();
-		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(), message.getCreator().getFName(), message.getCreator().getId()));
+		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(),
+				message.getCreator().getFName(), message.getCreator().getId()));
 		JLabel dateLabel = new JLabel(String.format("A : %s", message.getStringDate()));
 		// textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
 		JTextArea textArea = new JTextArea(String.format("\n%s", message.getContent()));
 
 		textArea.addMouseListener(new MessageStateListener(message));
-		
+
 		textArea.setEditable(false);
 		textArea.setBackground(UIManager.getColor("Panel.background"));
 
@@ -198,20 +198,15 @@ public class Interface {
 
 	public void setMessageColor(int readBy, JPanel childPane, Message message) {
 
-		if (readBy == 0) {
+		if (readBy == 1) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
-		}
-
-		else if (readBy < message.getNbTotalMembers()) {
+		} else if (readBy < message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
-		}
-
-		else if (readBy == message.getNbTotalMembers()) {
+		} else if (readBy == message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
-		}
-
-		else {
+		} else if (readBy == 0) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		} else {
 		}
 	}
 
@@ -314,14 +309,14 @@ public class Interface {
 	public Group[] groupsXorUser() {
 		Group[] groupList = Group.values();
 		Group[] groupListXorUser = new Group[groupList.length - 1];
-		
+
 		int i = 0;
 		for (Group g : groupList) {
-			if(g != user.getGroup()) {
+			if (g != user.getGroup()) {
 				groupListXorUser[i++] = g;
 			}
 		}
-		
+
 		return groupListXorUser;
 	}
 
