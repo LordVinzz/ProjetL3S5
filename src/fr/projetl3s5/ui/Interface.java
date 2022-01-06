@@ -57,7 +57,7 @@ public class Interface {
 	public Interface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
-		jFrame = new JFrame("Connexion: "+user.getPrenom()+" "+user.getFName());
+		jFrame = new JFrame("Connexion: " + user.getPrenom() + " " + user.getFName());
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JTabbedPane ticketsTab = new JTabbedPane();
@@ -307,18 +307,12 @@ public class Interface {
 	}
 
 	public Group[] groupsXorUser() {
-		Group[] groupList = Group.values();
+		Group[] groupList = Group.values(user);
 		Group[] groupListXorUser = new Group[groupList.length - 3];
-
 		int i = 0;
+
 		for (Group g : groupList) {
-			if (user.getGroup() == Group.PROFS || user.getGroup() == Group.ELEVES) {
-				if (g == Group.ADMIN || g == Group.ENTRETIENS) {
-					groupListXorUser[i++] = g;
-				}
-			} else if (g == Group.PROFS || g == Group.ELEVES) {
-				groupListXorUser[i++] = g;
-			}
+			groupListXorUser[i++] = g;
 		}
 
 		return groupListXorUser;

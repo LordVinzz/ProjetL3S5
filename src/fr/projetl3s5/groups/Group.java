@@ -1,7 +1,8 @@
 package fr.projetl3s5.groups;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import fr.projetl3s5.ui.User;
 
 public enum Group {
 
@@ -22,6 +23,22 @@ public enum Group {
 			if(int1 == g.id) return g;
 		}
 		return null;
+	}
+	
+	public static Group[] values(User user) {
+		Group[] list = new Group[2];
+		
+		if (user.getGroup() == Group.PROFS || user.getGroup() == Group.ELEVES) {
+			list[0]=ENTRETIENS;
+			list[1]=ADMIN;
+		}
+		else {
+			list[0]=PROFS;
+			list[1]=ELEVES;	
+		}
+		
+		return list;
+			
 	}
 	
 }
