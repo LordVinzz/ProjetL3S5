@@ -258,7 +258,7 @@ public class Interface {
 		JPanel msg = new JPanel();
 		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
 
-		JComboBox<Group> listGroupes = new JComboBox<>(groupsXorUser());
+		JComboBox<Group> listGroupes = new JComboBox<>(Group.values(user));
 
 		JButton sendButton = new JButton("Nouveau Ticket");
 		sendButton.addActionListener(new NewTicketListener(listGroupes, this));
@@ -303,18 +303,6 @@ public class Interface {
 		constraints.gridy = 0;
 		newPanel.add(title, constraints);
 		return newPanel;
-	}
-
-	public Group[] groupsXorUser() {
-		Group[] groupList = Group.values(user);
-		Group[] groupListXorUser = new Group[groupList.length - 3];
-		int i = 0;
-
-		for (Group g : groupList) {
-			groupListXorUser[i++] = g;
-		}
-
-		return groupListXorUser;
 	}
 
 	public User getUser() {
