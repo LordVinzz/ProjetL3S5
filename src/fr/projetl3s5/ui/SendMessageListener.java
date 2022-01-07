@@ -39,7 +39,7 @@ public class SendMessageListener implements ActionListener, Context {
 			}
 			
 		} else {
-			String msg = "Alors t'es bien gentil mais le fait d'envoyer juste rien c'est un peu con";
+			String msg = "Impossible d'envoyer un message vide !";
 			JOptionPane.showMessageDialog(null, msg, "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 	}

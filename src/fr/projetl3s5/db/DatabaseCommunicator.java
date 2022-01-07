@@ -54,7 +54,6 @@ public class DatabaseCommunicator {
 			jObject.put("Group", resultSet.getInt("_group"));
 			jObject.put("Id", resultSet.getString("username"));
 		} catch (SQLException e) {
-			e.printStackTrace();
 			jObject.put("Status", "invalid");
 			jObject.put("ConnectionToken", "null");
 		}

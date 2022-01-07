@@ -24,8 +24,9 @@ public class ConnectionPacket extends Packet {
 			ServerThread serv = (ServerThread) ctx;
 			JSONObject jObject = new JSONObject(content);
 			jObject = DatabaseCommunicator.getUser(jObject.getString("username"), jObject.getString("passwordHash"));
-
-			serv.setUser(new User(jObject.getString("Id"), jObject.getString("Name"), jObject.getString("FName")));
+			
+			if(jObject.getString("Status").equals("valid"))
+				serv.setUser(new User(jObject.getString("Id"), jObject.getString("Name"), jObject.getString("FName")));
 			ConnectionPacket connecPacket = new ConnectionPacket(jObject.toString());
 
 			serv.getOut().writeObject(connecPacket);

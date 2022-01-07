@@ -204,9 +204,8 @@ public class Interface {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
 		} else if (readBy == message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
-		} else if (readBy == 0) {
-			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		} else {
+			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		}
 	}
 

@@ -24,7 +24,7 @@ public class Login implements Context {
 	private JSONObject lastCredentials = null;
 	private JFrame frame;
 	private JButton validateButton;
-	
+
 	public Login(Client client) {
 		this.client = client;
 	}
@@ -41,8 +41,10 @@ public class Login implements Context {
 		if (lastCredentials.getString("Status").equals("valid")) {
 			User user = new User(lastCredentials.getString("Id"), lastCredentials.getString("Name"),
 					lastCredentials.getString("FName"), lastCredentials.getInt("Group"), client);
-			Interface i2 = new Interface(user);
+			new Interface(user);
 			frame.dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, "Identifiants invalides !", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
 		validateButton.setEnabled(true);
 	}
@@ -79,7 +81,7 @@ public class Login implements Context {
 	public JButton getValidateButton() {
 		return validateButton;
 	}
-	
+
 	private void setValues(JLabel labelUser, JLabel labelPass, JTextField textUser, JPasswordField fieldPass,
 			JButton valider, JPanel newPanel, GridBagConstraints constraints) {
 		constraints.anchor = GridBagConstraints.WEST;
