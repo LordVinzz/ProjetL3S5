@@ -87,12 +87,12 @@ public class ClientInterface {
 
 	public void setTicketTree() {
 		root.removeAllChildren();
-		int groupLength = Group.values().length;
+		int groupLength = Group.values(user).length;
 
 		leafGroup = new DefaultMutableTreeNode[groupLength];
 
 		for (int i = 0; i < groupLength; i++) {
-			leafGroup[i] = new DefaultMutableTreeNode(Group.values()[i]);
+			leafGroup[i] = new DefaultMutableTreeNode(Group.values(user)[i]);
 
 			for (Ticket t : user.getTickets()) {
 				if (t.getGroup() == Group.values()[i]) {
