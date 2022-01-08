@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,7 +35,7 @@ import javax.swing.tree.TreePath;
 import fr.projetl3s5.groups.Group;
 import sun.misc.Unsafe;
 
-public class Interface {
+public class ClientInterface {
 
 	private JFrame jFrame;
 	private JPanel masterPane = new JPanel();
@@ -54,10 +54,10 @@ public class Interface {
 
 	private User user;
 
-	public Interface(User user) {
+	public ClientInterface(User user) {
 		this.user = user;
 		this.user.setInterface(this);
-		jFrame = new JFrame("Connexion: " + user.getPrenom() + " " + user.getFName());
+		jFrame = new JFrame("Connexion: " + user.getName() + " " + user.getFName());
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JTabbedPane ticketsTab = new JTabbedPane();
@@ -66,6 +66,7 @@ public class Interface {
 		addComponentsToTabbedPane(ticketsTab);
 
 		jFrame.setSize(new Dimension(800, 500));
+		jFrame.setLocationRelativeTo(null);
 		jFrame.setVisible(true);
 	}
 
@@ -139,7 +140,7 @@ public class Interface {
 	public void addMessageToTicket(Message message) {
 		JPanel childPane = new JPanel();
 		JPanel lastPane = getLastMasterPaneComp();
-		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getPrenom(),
+		JLabel emailLabel = new JLabel(String.format("De : %s %s, via %s", message.getCreator().getName(),
 				message.getCreator().getFName(), message.getCreator().getId()));
 		JLabel dateLabel = new JLabel(String.format("A : %s", message.getStringDate()));
 		// textArea necessaire pour avoir le multiline contrairement a un JLabel ;)
@@ -309,11 +310,11 @@ public class Interface {
 		return user;
 	}
 
-	public JTextField getNameT() {
+	public JTextField getTextFieldName() {
 		return nameT;
 	}
 
-	public JTextArea getMsgT() {
+	public JTextArea getMessageTextArea() {
 		return msgT;
 	}
 

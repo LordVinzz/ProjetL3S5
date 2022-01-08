@@ -8,8 +8,8 @@ import java.nio.file.Files;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fr.projetl3s5.ui.SendMessageListener;
-import fr.projetl3s5.ui.User;
+import fr.projetl3s5.client.ui.SendMessageListener;
+import fr.projetl3s5.client.ui.User;
 
 public class NewMessagePacket extends Packet {
 
@@ -38,7 +38,7 @@ public class NewMessagePacket extends Packet {
 			messagesData = ticketData.getJSONArray("Messages");
 			
 			
-			userMessage.put("Name", user.getPrenom());
+			userMessage.put("Name", user.getName());
 			userMessage.put("FName", user.getFName());
 			userMessage.put("Id", user.getId());
 			userMessage.put("Date", System.currentTimeMillis());

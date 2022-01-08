@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,9 +15,9 @@ import fr.projetl3s5.network.SeenPacket;
 public class TreeMouseListener implements MouseListener {
 
 	private JTree tree;
-	private Interface interfacz;
+	private ClientInterface interfacz;
 
-	public TreeMouseListener(JTree tree, Interface interfacz) {
+	public TreeMouseListener(JTree tree, ClientInterface interfacz) {
 		this.tree = tree;
 		this.interfacz = interfacz;
 	}

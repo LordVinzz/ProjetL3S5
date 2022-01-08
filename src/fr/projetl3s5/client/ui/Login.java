@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,7 +41,7 @@ public class Login implements Context {
 		if (lastCredentials.getString("Status").equals("valid")) {
 			User user = new User(lastCredentials.getString("Id"), lastCredentials.getString("Name"),
 					lastCredentials.getString("FName"), lastCredentials.getInt("Group"), client);
-			new Interface(user);
+			new ClientInterface(user);
 			frame.dispose();
 		} else {
 			JOptionPane.showMessageDialog(null, "Identifiants invalides !", "Erreur", JOptionPane.ERROR_MESSAGE);

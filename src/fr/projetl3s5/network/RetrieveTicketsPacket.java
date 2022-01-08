@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import fr.projetl3s5.client.ui.Ticket;
+import fr.projetl3s5.client.ui.User;
 import fr.projetl3s5.db.DatabaseCommunicator;
 import fr.projetl3s5.groups.Group;
-import fr.projetl3s5.ui.Ticket;
-import fr.projetl3s5.ui.User;
 
 public class RetrieveTicketsPacket extends Packet {
 

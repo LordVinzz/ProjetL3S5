@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

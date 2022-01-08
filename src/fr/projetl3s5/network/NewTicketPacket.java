@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+import fr.projetl3s5.client.ui.NewTicketListener;
+import fr.projetl3s5.client.ui.User;
 import fr.projetl3s5.db.DatabaseCommunicator;
-import fr.projetl3s5.ui.NewTicketListener;
-import fr.projetl3s5.ui.User;
 
 public class NewTicketPacket extends Packet{
 

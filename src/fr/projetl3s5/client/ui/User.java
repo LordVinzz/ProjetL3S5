@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,10 +19,12 @@ public class User implements Context{
 	private String id, name, fName;
 	private Client client;
 	private int nbTotalTicket = 0;
-
+	private int uuid = 0;
+	private String passwordHash = null;
+	
 	private Group group;
 	private NavigableSet<Ticket> tickets = new TreeSet<>();
-	private Interface interfacz;
+	private ClientInterface interfacz;
 
 	public User(String id, String name, String fName) {
 		this.id = id;
@@ -30,10 +32,18 @@ public class User implements Context{
 		this.name = name;
 	}
 	
-	public User(String id, String name, String fName, Integer group, Client client) {
-		this.id = id;
-		this.fName = fName;
-		this.name = name;
+	public User(String id, String name, String fName, int group) {
+		this(id,name,fName);
+		this.group = Group.getGroupByID(group);
+	}
+	
+	public User(String id, String name, String fName, int group, int uuid) {
+		this(id,name,fName,group);
+		this.uuid = uuid;
+	}
+	
+	public User(String id, String name, String fName, int group, Client client) {
+		this(id,name,fName);
 		this.client = client;
 		this.group = Group.getGroupByID(group);
 
@@ -56,7 +66,7 @@ public class User implements Context{
 		return id;
 	}
 
-	public String getPrenom() {
+	public String getName() {
 		return name;
 	}
 
@@ -64,6 +74,18 @@ public class User implements Context{
 		return fName;
 	}
 
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+	
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+	
+	public int getUuid() {
+		return uuid;
+	}
+	
 	public Group getGroup() {
 		return group;
 	}
@@ -85,7 +107,7 @@ public class User implements Context{
 
 		if (obj instanceof User) {
 			User user = (User) obj;
-			return id.equals(user.getId()) && fName.equals(user.getPrenom()) && name.equals(user.getFName())
+			return id.equals(user.getId()) && fName.equals(user.getName()) && name.equals(user.getFName())
 					&& group.equals(user.getGroup());
 		}
 
@@ -97,12 +119,28 @@ public class User implements Context{
 		nbTotalTicket++;
 	}
 
-	public void setInterface(Interface interface1) {
+	public void setInterface(ClientInterface interface1) {
 		this.interfacz = interface1;
 	}
 
 	public void updateInterface() {
 		interfacz.setTicketTree();
+	}
+	
+	public void setfName(String fName) {
+		this.fName = fName;
+	}
+	
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

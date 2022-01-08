@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,9 +16,9 @@ import fr.projetl3s5.network.NewTicketPacket;
 public class NewTicketListener implements ActionListener, Context{
 
 	JComboBox<Group> groupListComboBox;
-	Interface interfacz;
+	ClientInterface interfacz;
 
-	public NewTicketListener(JComboBox<Group> listG, Interface interfacz) {
+	public NewTicketListener(JComboBox<Group> listG, ClientInterface interfacz) {
 		this.groupListComboBox = listG;
 		this.interfacz = interfacz;
 	}
@@ -26,8 +26,8 @@ public class NewTicketListener implements ActionListener, Context{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		String message = interfacz.getMsgT().getText();
-		String topic = interfacz.getNameT().getText();
+		String message = interfacz.getMessageTextArea().getText();
+		String topic = interfacz.getTextFieldName().getText();
 
 		if (textAndTopicFilled(message, topic)) {
 			
@@ -37,7 +37,7 @@ public class NewTicketListener implements ActionListener, Context{
 			jObject.put("Group", ((Group)groupListComboBox.getSelectedItem()).getId());
 			jObject.put("UserGroup", interfacz.getUser().getGroup().getId());
 			jObject.put("Id", u.getId());
-			jObject.put("Name", u.getPrenom());
+			jObject.put("Name", u.getName());
 			jObject.put("FName", u.getFName());
 			jObject.put("Content", message);
 			
@@ -67,7 +67,7 @@ public class NewTicketListener implements ActionListener, Context{
 		return interfacz.getUser();
 	}
 	
-	public Interface getInterface() {
+	public ClientInterface getInterface() {
 		return interfacz;
 	}
 }

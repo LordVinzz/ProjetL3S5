@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,9 +16,9 @@ import fr.projetl3s5.network.NewMessagePacket;
 public class SendMessageListener implements ActionListener, Context {
 
 	private User user;
-	private Interface interfacz;
+	private ClientInterface interfacz;
 
-	public SendMessageListener(Interface interfacz) {
+	public SendMessageListener(ClientInterface interfacz) {
 		this.interfacz = interfacz;
 		this.user = interfacz.getUser();
 	}

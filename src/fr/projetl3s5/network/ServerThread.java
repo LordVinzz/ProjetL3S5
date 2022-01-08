@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import fr.projetl3s5.client.ui.User;
 import fr.projetl3s5.db.DatabaseCommunicator;
-import fr.projetl3s5.ui.User;
 
 public class ServerThread extends Thread implements Context{
 	

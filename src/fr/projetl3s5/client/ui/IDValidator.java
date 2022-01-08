@@ -1,4 +1,4 @@
-package fr.projetl3s5.ui;
+package fr.projetl3s5.client.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

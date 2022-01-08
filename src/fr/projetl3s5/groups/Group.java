@@ -1,12 +1,10 @@
 package fr.projetl3s5.groups;
 
-import java.util.ArrayList;
-
-import fr.projetl3s5.ui.User;
+import fr.projetl3s5.client.ui.User;
 
 public enum Group {
 
-	ELEVES(1), PROFS(2), ENTRETIENS(4), ADMIN(8);
+	INVALIDE(0), ELEVES(1), PROFS(2), ENTRETIENS(4), ADMIN(8);
 
 	private int id;
 	
