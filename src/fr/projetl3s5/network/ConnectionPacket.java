@@ -35,5 +35,5 @@ public class ConnectionPacket extends Packet {
 			login.checkCredentials(new JSONObject(content));
 		}
 	}
-
+	
 }

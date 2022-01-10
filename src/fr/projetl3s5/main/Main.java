@@ -9,21 +9,21 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		ServerInterface serverInterface = new ServerInterface();
+//		ServerInterface serverInterface = new ServerInterface();
+//		
+//		Thread t = new Thread() {
+//			@Override
+//			public void run() {
+//				Server.init();
+//			}
+//		};
+//		t.start();
 		
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				Server.init();
-			}
-		};
-		t.start();
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 		Client client = new Client("localhost", 13337);
 		client.start();

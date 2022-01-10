@@ -14,7 +14,6 @@ import fr.projetl3s5.client.ui.User;
 public class NewMessagePacket extends Packet {
 
 	private static final long serialVersionUID = -5242058500345004836L;
-
 	private String content;
 	
 	public NewMessagePacket(String content) {
@@ -58,5 +57,5 @@ public class NewMessagePacket extends Packet {
 			enm.addMessageFromServer(new JSONObject(content));
 		}
 	}
-
+	
 }

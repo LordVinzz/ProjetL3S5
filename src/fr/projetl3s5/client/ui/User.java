@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import fr.projetl3s5.groups.Group;
 import fr.projetl3s5.network.Client;
 import fr.projetl3s5.network.Context;
+import fr.projetl3s5.network.Packet;
 import fr.projetl3s5.network.RetrieveTicketsPacket;
 
 public class User implements Context{

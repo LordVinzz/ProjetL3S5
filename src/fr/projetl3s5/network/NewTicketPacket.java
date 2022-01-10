@@ -11,7 +11,7 @@ import fr.projetl3s5.db.DatabaseCommunicator;
 public class NewTicketPacket extends Packet{
 
 	private static final long serialVersionUID = -4592584283349467247L;
-
+	
 	private String content;
 	
 	public NewTicketPacket(String content) {
@@ -41,8 +41,8 @@ public class NewTicketPacket extends Packet{
 			
 			u.getTicketsFromServer();
 			
-			ntl.getInterface().reloadTree();
+			u.updateInterface();
 		}
 	}
-
+	
 }

@@ -23,20 +23,61 @@ public enum Group {
 		return null;
 	}
 	
-	public static Group[] values(User user) {
-		Group[] list = new Group[2];
+	public static Group[] getGroupForJTree(User user) {
+		Group[] list = new Group[3];
 		
-		if (user.getGroup() == Group.PROFS || user.getGroup() == Group.ELEVES) {
-			list[0]=ENTRETIENS;
-			list[1]=ADMIN;
+		switch(user.getGroup()) {
+		case PROFS:
+			list[0] = PROFS;
+			list[1] = ADMIN;
+			list[2] = ENTRETIENS;
+			break;
+		case ELEVES:
+			list[0] = ELEVES;
+			list[1] = ADMIN;
+			list[2] = ENTRETIENS;
+			break;
+		case ADMIN:
+			list[0] = ADMIN;
+			list[1] = PROFS;
+			list[2] = ELEVES;
+			break;
+		case ENTRETIENS:
+			list[0] = ENTRETIENS;
+			list[1] = PROFS;
+			list[2] = ELEVES;
+			break;
+		default:
+			break;
 		}
-		else {
-			list[0]=PROFS;
-			list[1]=ELEVES;	
-		}
-		
 		return list;
 			
+	}
+
+	public static Group[] getGroupForComboBox(User user) {
+		Group[] list = new Group[2];
+		
+		switch(user.getGroup()) {
+		case PROFS:
+			list[0] = ADMIN;
+			list[1] = ENTRETIENS;
+			break;
+		case ELEVES:
+			list[0] = ADMIN;
+			list[1] = ENTRETIENS;
+			break;
+		case ADMIN:
+			list[0] = PROFS;
+			list[1] = ELEVES;
+			break;
+		case ENTRETIENS:
+			list[0] = PROFS;
+			list[1] = ELEVES;
+			break;
+		default:
+			break;
+		}
+		return list;
 	}
 	
 }

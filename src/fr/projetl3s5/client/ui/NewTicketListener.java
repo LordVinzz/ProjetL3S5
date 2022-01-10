@@ -14,7 +14,7 @@ import fr.projetl3s5.network.Context;
 import fr.projetl3s5.network.NewTicketPacket;
 
 public class NewTicketListener implements ActionListener, Context{
-
+	
 	JComboBox<Group> groupListComboBox;
 	ClientInterface interfacz;
 

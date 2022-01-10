@@ -13,7 +13,7 @@ import fr.projetl3s5.groups.Group;
 public class RetrieveTicketsPacket extends Packet {
 
 	private static final long serialVersionUID = 8772625988987468532L;
-
+	
 	private String content;
 	private List<String> ticketsList;
 
@@ -50,5 +50,4 @@ public class RetrieveTicketsPacket extends Packet {
 			user.updateInterface();
 		}
 	}
-
 }

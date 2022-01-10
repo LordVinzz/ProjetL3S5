@@ -60,9 +60,9 @@ public class Login implements Context {
 		JLabel labelUser = new JLabel("Identifiant: ");
 		JLabel labelPass = new JLabel("Mot de Passe: ");
 		JTextField textUser = new JTextField(20);
-		textUser.setText("elevetest@univ-tlse3.fr");
+		textUser.setText("jean-daniel@univ-tlse3.fr");
 		JPasswordField fieldPass = new JPasswordField(20);
-		fieldPass.setText("eleve");
+		fieldPass.setText("jean");
 		validateButton = new JButton("Valider");
 		validateButton.addActionListener(new IDValidator(fieldPass, textUser, client, this));
 

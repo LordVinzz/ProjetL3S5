@@ -14,7 +14,7 @@ import fr.projetl3s5.network.Context;
 import fr.projetl3s5.network.NewMessagePacket;
 
 public class SendMessageListener implements ActionListener, Context {
-
+	
 	private User user;
 	private ClientInterface interfacz;
 

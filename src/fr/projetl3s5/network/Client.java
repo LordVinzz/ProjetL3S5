@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Client extends Thread implements Context {
@@ -30,7 +31,10 @@ public class Client extends Thread implements Context {
 		Object o = null;
 		try {
 			while(this.socket != null && (o = in.readObject()) != null) {
-				if(o instanceof Packet)packets.add((Packet)o);
+				if(o instanceof Packet) {
+					packets.add((Packet)o);
+				}
+				
 				System.out.println(packets);
 				while(contexts.size() == packets.size() && contexts.size() != 0) {
 					pollPacket().execute(pollContext());
@@ -55,7 +59,7 @@ public class Client extends Thread implements Context {
 	
 	public synchronized Packet pollPacket() {
 		Packet p = packets.get(getPacketQueueSize() - 1);
-		packets.remove(p);
+		packets.remove(getPacketQueueSize() - 1);
 		return p;
 	}
 	
@@ -65,7 +69,7 @@ public class Client extends Thread implements Context {
 	
 	public synchronized Context pollContext() {
 		Context p = contexts.get(getContextQueueSize() - 1);
-		contexts.remove(p);
+		contexts.remove(getContextQueueSize() - 1);
 		return p;
 	}
 	
@@ -73,7 +77,7 @@ public class Client extends Thread implements Context {
 		return socket;
 	}
 
-	public void pendExecution(Context ctx) {
+	public synchronized void pendExecution(Context ctx) {
 		contexts.add(ctx);
 	}	
 }

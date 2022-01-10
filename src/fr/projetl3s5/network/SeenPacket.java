@@ -11,7 +11,7 @@ import org.json.JSONObject;
 public class SeenPacket extends Packet{
 
 	private static final long serialVersionUID = -7859458661875328774L;
-
+	
 	private String content;
 	
 	public SeenPacket(String content) {
@@ -47,5 +47,4 @@ public class SeenPacket extends Packet{
 			
 		}
 	}
-
 }

@@ -65,7 +65,7 @@ public class ClientInterface {
 
 		addComponentsToTabbedPane(ticketsTab);
 
-		jFrame.setSize(new Dimension(800, 500));
+		jFrame.setSize(new Dimension(900, 500));
 		jFrame.setLocationRelativeTo(null);
 		jFrame.setVisible(true);
 	}
@@ -87,15 +87,15 @@ public class ClientInterface {
 
 	public void setTicketTree() {
 		root.removeAllChildren();
-		int groupLength = Group.values(user).length;
+		int groupLength = Group.getGroupForJTree(user).length;
 
 		leafGroup = new DefaultMutableTreeNode[groupLength];
 
 		for (int i = 0; i < groupLength; i++) {
-			leafGroup[i] = new DefaultMutableTreeNode(Group.values(user)[i]);
+			leafGroup[i] = new DefaultMutableTreeNode(Group.getGroupForJTree(user)[i]);
 
 			for (Ticket t : user.getTickets()) {
-				if (t.getGroup() == Group.values()[i]) {
+				if (t.getGroup() == Group.getGroupForJTree(user)[i]) {
 					t.computeUnreadMessages(user);
 					DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(t);
 
@@ -201,12 +201,16 @@ public class ClientInterface {
 
 		if (readBy == 1) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+			message.setState(MsgState.RECU);
 		} else if (readBy < message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3));
+			message.setState(MsgState.RECU);
 		} else if (readBy == message.getNbTotalMembers()) {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 3));
+			message.setState(MsgState.LU);
 		} else {
 			childPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+			message.setState(MsgState.EN_ATTENTE);
 		}
 	}
 
@@ -233,12 +237,13 @@ public class ClientInterface {
 		ticketsTab.addTab("Liste de Tickets", splitPane);
 		root = new DefaultMutableTreeNode("List de Tickets");
 		JTree tree = createTicketTree();
+		JScrollPane jsc = new JScrollPane(tree);
 		model = (DefaultTreeModel) tree.getModel();
 
 		splitPane.setOneTouchExpandable(false);
 		writePanel.add(writingZone);
 		writePanel.add(btnNewButton);
-		splitPane.setLeftComponent(tree);
+		splitPane.setLeftComponent(jsc);
 		splitPane.setRightComponent(msgZone);
 
 		btnNewButton.addActionListener(new SendMessageListener(this));
@@ -259,7 +264,7 @@ public class ClientInterface {
 		JPanel msg = new JPanel();
 		title.setFont(new Font("Lucida Console", Font.BOLD, 20));
 
-		JComboBox<Group> listGroupes = new JComboBox<>(Group.values(user));
+		JComboBox<Group> listGroupes = new JComboBox<>(Group.getGroupForComboBox(user));
 
 		JButton sendButton = new JButton("Nouveau Ticket");
 		sendButton.addActionListener(new NewTicketListener(listGroupes, this));
